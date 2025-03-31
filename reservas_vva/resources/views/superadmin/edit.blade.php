@@ -44,10 +44,10 @@
 
 <body>
     @if (!Auth::check())
-    <script>
-        window.location.href = "{{ route('superadmin.login') }}";
-    </script>
-@endif
+        <script>
+            window.location.href = "{{ route('superadmin.login') }}";
+        </script>
+    @endif
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
@@ -108,19 +108,287 @@
             <!--Información de las Instalaciones teniendo en cuenta que tienen los campos nombre, dirección, teléfono, html_normas, servicios,horario,slug,política,condiciones y luego vpoy a necesitar 5 radio button de ver_normas, ver_servicios, ver_horario,ver_politica,ver_condiciones los cuales pondran en la base de datos 1 si se selecciona la opción mostrar y 0 si se selecciona la opcion no mostrar-->
             <div class="mb-4">
                 <h3 class="text-primary">Instalaciones</h3>
-                @foreach ($aDatos['instalaciones'] as $instalacion)
+                @if (!empty($aDatos['instalaciones']) && count($aDatos['instalaciones']) > 0)
+                    @foreach ($aDatos['instalaciones'] as $instalacion)
+                        <div class="instalacion mb-4 p-3 border rounded">
+                            <h5 class="text-secondary">Instalación: {{ $instalacion->nombre }}</h5>
+                            <div class="row">
+                                <!-- Campo: Nombre -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre_{{ $instalacion->id }}" class="form-label">Nombre</label>
+                                    <input type="text"
+                                        class="form-control @error('nombre_' . $instalacion->id) is-invalid @enderror"
+                                        name="nombre_{{ $instalacion->id }}" id="nombre_{{ $instalacion->id }}"
+                                        value="{{ old('nombre_' . $instalacion->id, $instalacion->nombre) }}"
+                                        placeholder="Nombre">
+                                    @error('nombre_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Dirección -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="direccion_{{ $instalacion->id }}" class="form-label">Dirección</label>
+                                    <input type="text"
+                                        class="form-control @error('direccion_' . $instalacion->id) is-invalid @enderror"
+                                        name="direccion_{{ $instalacion->id }}" id="direccion_{{ $instalacion->id }}"
+                                        value="{{ old('direccion_' . $instalacion->id, $instalacion->direccion) }}"
+                                        placeholder="Dirección">
+                                    @error('direccion_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Teléfono -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="tlfno_{{ $instalacion->id }}" class="form-label">Teléfono</label>
+                                    <input type="text"
+                                        class="form-control @error('tlfno_' . $instalacion->id) is-invalid @enderror"
+                                        name="tlfno_{{ $instalacion->id }}" id="tlfno_{{ $instalacion->id }}"
+                                        value="{{ old('tlfno_' . $instalacion->id, $instalacion->tlfno) }}"
+                                        placeholder="Teléfono">
+                                    @error('tlfno_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: HTML Normas -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="html_normas_{{ $instalacion->id }}" class="form-label">HTML
+                                        Normas</label>
+                                    <textarea class="form-control @error('html_normas_' . $instalacion->id) is-invalid @enderror"
+                                        name="html_normas_{{ $instalacion->id }}" id="html_normas_{{ $instalacion->id }}" rows="6"
+                                        placeholder="HTML Normas">{{ old('html_normas_' . $instalacion->id, $instalacion->html_normas) }}</textarea>
+                                    @error('html_normas_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Servicios -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="servicios_{{ $instalacion->id }}"
+                                        class="form-label">Servicios</label>
+                                    <textarea class="form-control @error('servicios_' . $instalacion->id) is-invalid @enderror"
+                                        name="servicios_{{ $instalacion->id }}" id="servicios_{{ $instalacion->id }}" placeholder="Servicios">{{ old('servicios_' . $instalacion->id, $instalacion->servicios) }}</textarea>
+                                    @error('servicios_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Horario -->
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Horario</label>
+                                    <div class="border p-3 rounded bg-light">
+                                        @foreach ($instalacion->horario as $dia => $data)
+                                            <div class="mb-3">
+                                                <h6 class="text-primary">
+                                                    Día: {{ $dia }}
+                                                </h6>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Hora Inicio</th>
+                                                            <th>Hora Fin</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($data['intervalo'] as $index => $intervalo)
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="text" class="form-control"
+                                                                        name="horario_{{ $instalacion->id }}[{{ $dia }}][intervalo][{{ $index }}][hinicio]"
+                                                                        value="{{ $intervalo['hinicio'] }}"
+                                                                        placeholder="Hora Inicio">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" class="form-control"
+                                                                        name="horario_{{ $instalacion->id }}[{{ $dia }}][intervalo][{{ $index }}][hfin]"
+                                                                        value="{{ $intervalo['hfin'] }}"
+                                                                        placeholder="Hora Fin">
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Campo: Slug -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="slug_{{ $instalacion->id }}" class="form-label">Slug</label>
+                                    <input type="text"
+                                        class="form-control @error('slug_' . $instalacion->id) is-invalid @enderror"
+                                        name="slug_{{ $instalacion->id }}" id="slug_{{ $instalacion->id }}"
+                                        value="{{ old('slug_' . $instalacion->id, $instalacion->slug) }}"
+                                        placeholder="Slug">
+                                    @error('slug_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Política -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="politica_{{ $instalacion->id }}" class="form-label">Política</label>
+                                    <textarea class="form-control @error('politica_' . $instalacion->id) is-invalid @enderror"
+                                        name="politica_{{ $instalacion->id }}" id="politica_{{ $instalacion->id }}" rows="6"
+                                        placeholder="Política">{{ old('politica_' . $instalacion->id, $instalacion->politica) }}</textarea>
+                                    @error('politica_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Condiciones -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="condiciones_{{ $instalacion->id }}"
+                                        class="form-label">Condiciones</label>
+                                    <textarea class="form-control @error('condiciones_' . $instalacion->id) is-invalid @enderror"
+                                        name="condiciones_{{ $instalacion->id }}" id="condiciones_{{ $instalacion->id }}" rows="6"
+                                        placeholder="Condiciones">{{ old('condiciones_' . $instalacion->id, $instalacion->condiciones) }}</textarea>
+                                    @error('condiciones_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Botones de radio para opciones de visualización -->
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Opciones de visualización</label>
+
+                                    <!-- Botones de radio para Normas -->
+                                    <div class="mb-2">
+                                        <label class="form-label">Mostrar Normas</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_normas_{{ $instalacion->id }}"
+                                                id="ver_normas_si_{{ $instalacion->id }}" value="1"
+                                                {{ old('ver_normas_' . $instalacion->id, $instalacion->ver_normas) == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_normas_si_{{ $instalacion->id }}">Sí</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_normas_{{ $instalacion->id }}"
+                                                id="ver_normas_no_{{ $instalacion->id }}" value="0"
+                                                {{ old('ver_normas_' . $instalacion->id, $instalacion->ver_normas) == 0 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_normas_no_{{ $instalacion->id }}">No</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botones de radio para Servicios -->
+                                    <div class="mb-2">
+                                        <label class="form-label">Mostrar Servicios</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_servicios_{{ $instalacion->id }}"
+                                                id="ver_servicios_si_{{ $instalacion->id }}" value="1"
+                                                {{ old('ver_servicios_' . $instalacion->id, $instalacion->ver_servicios) == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_servicios_si_{{ $instalacion->id }}">Sí</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_servicios_{{ $instalacion->id }}"
+                                                id="ver_servicios_no_{{ $instalacion->id }}" value="0"
+                                                {{ old('ver_servicios_' . $instalacion->id, $instalacion->ver_servicios) == 0 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_servicios_no_{{ $instalacion->id }}">No</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botones de radio para Horario -->
+                                    <div class="mb-2">
+                                        <label class="form-label">Mostrar Horario</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_horario_{{ $instalacion->id }}"
+                                                id="ver_horario_si_{{ $instalacion->id }}" value="1"
+                                                {{ old('ver_horario_' . $instalacion->id, $instalacion->ver_horario) == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_horario_si_{{ $instalacion->id }}">Sí</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_horario_{{ $instalacion->id }}"
+                                                id="ver_horario_no_{{ $instalacion->id }}" value="0"
+                                                {{ old('ver_horario_' . $instalacion->id, $instalacion->ver_horario) == 0 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_horario_no_{{ $instalacion->id }}">No</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botones de radio para Política -->
+                                    <div class="mb-2">
+                                        <label class="form-label">Mostrar Política</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_politica_{{ $instalacion->id }}"
+                                                id="ver_politica_si_{{ $instalacion->id }}" value="1"
+                                                {{ old('ver_politica_' . $instalacion->id, $instalacion->ver_politica) == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_politica_si_{{ $instalacion->id }}">Sí</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_politica_{{ $instalacion->id }}"
+                                                id="ver_politica_no_{{ $instalacion->id }}" value="0"
+                                                {{ old('ver_politica_' . $instalacion->id, $instalacion->ver_politica) == 0 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_politica_no_{{ $instalacion->id }}">No</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botones de radio para Condiciones -->
+                                    <div class="mb-2">
+                                        <label class="form-label">Mostrar Condiciones</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_condiciones_{{ $instalacion->id }}"
+                                                id="ver_condiciones_si_{{ $instalacion->id }}" value="1"
+                                                {{ old('ver_condiciones_' . $instalacion->id, $instalacion->ver_condiciones) == 1 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_condiciones_si_{{ $instalacion->id }}">Sí</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio"
+                                                name="ver_condiciones_{{ $instalacion->id }}"
+                                                id="ver_condiciones_no_{{ $instalacion->id }}" value="0"
+                                                {{ old('ver_condiciones_' . $instalacion->id, $instalacion->ver_condiciones) == 0 ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="ver_condiciones_no_{{ $instalacion->id }}">No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    {{-- Creación de formulario con los campos vacíos --}}
                     <div class="instalacion mb-4 p-3 border rounded">
-                        <h5 class="text-secondary">Instalación: {{ $instalacion->nombre }}</h5>
                         <div class="row">
                             <!-- Campo: Nombre -->
                             <div class="col-md-6 mb-3">
-                                <label for="nombre_{{ $instalacion->id }}" class="form-label">Nombre</label>
-                                <input type="text"
-                                    class="form-control @error('nombre_' . $instalacion->id) is-invalid @enderror"
-                                    name="nombre_{{ $instalacion->id }}" id="nombre_{{ $instalacion->id }}"
-                                    value="{{ old('nombre_' . $instalacion->id, $instalacion->nombre) }}"
-                                    placeholder="Nombre">
-                                @error('nombre_' . $instalacion->id)
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control @error('nombre') is-invalid @enderror"
+                                    id="nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Nombre">
+                                @error('nombre')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -129,13 +397,11 @@
 
                             <!-- Campo: Dirección -->
                             <div class="col-md-6 mb-3">
-                                <label for="direccion_{{ $instalacion->id }}" class="form-label">Dirección</label>
-                                <input type="text"
-                                    class="form-control @error('direccion_' . $instalacion->id) is-invalid @enderror"
-                                    name="direccion_{{ $instalacion->id }}" id="direccion_{{ $instalacion->id }}"
-                                    value="{{ old('direccion_' . $instalacion->id, $instalacion->direccion) }}"
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control @error('direccion') is-invalid @enderror"
+                                    id="direccion" name="direccion" value="{{ old('direccion') }}"
                                     placeholder="Dirección">
-                                @error('direccion_' . $instalacion->id)
+                                @error('direccion')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -144,13 +410,11 @@
 
                             <!-- Campo: Teléfono -->
                             <div class="col-md-6 mb-3">
-                                <label for="tlfno_{{ $instalacion->id }}" class="form-label">Teléfono</label>
-                                <input type="text"
-                                    class="form-control @error('tlfno_' . $instalacion->id) is-invalid @enderror"
-                                    name="tlfno_{{ $instalacion->id }}" id="tlfno_{{ $instalacion->id }}"
-                                    value="{{ old('tlfno_' . $instalacion->id, $instalacion->tlfno) }}"
+                                <label for="tlfno" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control @error('tlfno') is-invalid @enderror"
+                                    id="tlfno" name="tlfno" value="{{ old('tlfno') }}"
                                     placeholder="Teléfono">
-                                @error('tlfno_' . $instalacion->id)
+                                @error('tlfno')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -158,13 +422,11 @@
                             </div>
 
                             <!-- Campo: HTML Normas -->
-                            <div class="col-md-12 mb-3">
-                                <label for="html_normas_{{ $instalacion->id }}" class="form-label">HTML
-                                    Normas</label>
-                                <textarea class="form-control @error('html_normas_' . $instalacion->id) is-invalid @enderror"
-                                    name="html_normas_{{ $instalacion->id }}" id="html_normas_{{ $instalacion->id }}" rows="6"
-                                    placeholder="HTML Normas">{{ old('html_normas_' . $instalacion->id, $instalacion->html_normas) }}</textarea>
-                                @error('html_normas_' . $instalacion->id)
+                            <div class="col-md-6 mb-3">
+                                <label for="html_normas" class="form-label">HTML Normas</label>
+                                <textarea class="form-control @error('html_normas') is-invalid @enderror" name="html_normas" id="html_normas"
+                                    rows="6" placeholder="HTML Normas">{{ old('html_normas') }}</textarea>
+                                @error('html_normas')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -173,10 +435,10 @@
 
                             <!-- Campo: Servicios -->
                             <div class="col-md-6 mb-3">
-                                <label for="servicios_{{ $instalacion->id }}" class="form-label">Servicios</label>
-                                <textarea class="form-control @error('servicios_' . $instalacion->id) is-invalid @enderror"
-                                    name="servicios_{{ $instalacion->id }}" id="servicios_{{ $instalacion->id }}" placeholder="Servicios">{{ old('servicios_' . $instalacion->id, $instalacion->servicios) }}</textarea>
-                                @error('servicios_' . $instalacion->id)
+                                <label for="servicios" class="form-label">Servicios</label>
+                                <textarea class="form-control @error('servicios') is-invalid @enderror" name="servicios" id="servicios"
+                                    placeholder="Servicios">{{ old('servicios') }}</textarea>
+                                @error('servicios')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -187,11 +449,9 @@
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Horario</label>
                                 <div class="border p-3 rounded bg-light">
-                                    @foreach ($instalacion->horario as $dia => $data)
+                                    @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
                                         <div class="mb-3">
-                                            <h6 class="text-primary">
-                                                Día: {{ $dia }}
-                                            </h6>
+                                            <h6 class="text-primary">Día: {{ $dia }}</h6>
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
@@ -200,22 +460,23 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($data['intervalo'] as $index => $intervalo)
+                                                    @for ($i = 0; $i < 2; $i++)
+                                                        {{-- Dos intervalos por día --}}
                                                         <tr>
                                                             <td>
-                                                                <input type="text" class="form-control"
-                                                                    name="horario_{{ $instalacion->id }}[{{ $dia }}][intervalo][{{ $index }}][hinicio]"
-                                                                    value="{{ $intervalo['hinicio'] }}"
+                                                                <input type="time" class="form-control"
+                                                                    name="horario[{{ strtolower($dia) }}][intervalo][{{ $i }}][hinicio]"
+                                                                    value="{{ old('horario.' . strtolower($dia) . ".intervalo.$i.hinicio") }}"
                                                                     placeholder="Hora Inicio">
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control"
-                                                                    name="horario_{{ $instalacion->id }}[{{ $dia }}][intervalo][{{ $index }}][hfin]"
-                                                                    value="{{ $intervalo['hfin'] }}"
+                                                                <input type="time" class="form-control"
+                                                                    name="horario[{{ strtolower($dia) }}][intervalo][{{ $i }}][hfin]"
+                                                                    value="{{ old('horario.' . strtolower($dia) . ".intervalo.$i.hfin") }}"
                                                                     placeholder="Hora Fin">
                                                             </td>
                                                         </tr>
-                                                    @endforeach
+                                                    @endfor
                                                 </tbody>
                                             </table>
                                         </div>
@@ -225,158 +486,25 @@
 
                             <!-- Campo: Slug -->
                             <div class="col-md-6 mb-3">
-                                <label for="slug_{{ $instalacion->id }}" class="form-label">Slug</label>
-                                <input type="text"
-                                    class="form-control @error('slug_' . $instalacion->id) is-invalid @enderror"
-                                    name="slug_{{ $instalacion->id }}" id="slug_{{ $instalacion->id }}"
-                                    value="{{ old('slug_' . $instalacion->id, $instalacion->slug) }}"
-                                    placeholder="Slug">
-                                @error('slug_' . $instalacion->id)
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                                <label for="slug" class="form-label">Slug</label>
+                                <input type="text" class="form-control" id="slug" name="slug"
+                                    value="{{ old('slug') }}" placeholder="Slug">
                             </div>
 
                             <!-- Campo: Política -->
-                            <div class="col-md-12 mb-3">
-                                <label for="politica_{{ $instalacion->id }}" class="form-label">Política</label>
-                                <textarea class="form-control @error('politica_' . $instalacion->id) is-invalid @enderror"
-                                    name="politica_{{ $instalacion->id }}" id="politica_{{ $instalacion->id }}" rows="6"
-                                    placeholder="Política">{{ old('politica_' . $instalacion->id, $instalacion->politica) }}</textarea>
-                                @error('politica_' . $instalacion->id)
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                            <div class="col-md-6 mb-3">
+                                <label for="politica" class="form-label">Política</label>
+                                <textarea class="form-control" name="politica" id="politica" rows="6" placeholder="Política">{{ old('politica') }}</textarea>
                             </div>
 
                             <!-- Campo: Condiciones -->
-                            <div class="col-md-12 mb-3">
-                                <label for="condiciones_{{ $instalacion->id }}"
-                                    class="form-label">Condiciones</label>
-                                <textarea class="form-control @error('condiciones_' . $instalacion->id) is-invalid @enderror"
-                                    name="condiciones_{{ $instalacion->id }}" id="condiciones_{{ $instalacion->id }}" rows="6"
-                                    placeholder="Condiciones">{{ old('condiciones_' . $instalacion->id, $instalacion->condiciones) }}</textarea>
-                                @error('condiciones_' . $instalacion->id)
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <!-- Botones de radio para opciones de visualización -->
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Opciones de visualización</label>
-
-                                <!-- Botones de radio para Normas -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Normas</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_normas_{{ $instalacion->id }}"
-                                            id="ver_normas_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_normas_' . $instalacion->id, $instalacion->ver_normas) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_normas_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_normas_{{ $instalacion->id }}"
-                                            id="ver_normas_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_normas_' . $instalacion->id, $instalacion->ver_normas) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_normas_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Servicios -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Servicios</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_servicios_{{ $instalacion->id }}"
-                                            id="ver_servicios_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_servicios_' . $instalacion->id, $instalacion->ver_servicios) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_servicios_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_servicios_{{ $instalacion->id }}"
-                                            id="ver_servicios_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_servicios_' . $instalacion->id, $instalacion->ver_servicios) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_servicios_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Horario -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Horario</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_horario_{{ $instalacion->id }}"
-                                            id="ver_horario_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_horario_' . $instalacion->id, $instalacion->ver_horario) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_horario_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_horario_{{ $instalacion->id }}"
-                                            id="ver_horario_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_horario_' . $instalacion->id, $instalacion->ver_horario) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_horario_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Política -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Política</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_politica_{{ $instalacion->id }}"
-                                            id="ver_politica_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_politica_' . $instalacion->id, $instalacion->ver_politica) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_politica_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_politica_{{ $instalacion->id }}"
-                                            id="ver_politica_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_politica_' . $instalacion->id, $instalacion->ver_politica) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_politica_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Condiciones -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Condiciones</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_condiciones_{{ $instalacion->id }}"
-                                            id="ver_condiciones_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_condiciones_' . $instalacion->id, $instalacion->ver_condiciones) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_condiciones_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_condiciones_{{ $instalacion->id }}"
-                                            id="ver_condiciones_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_condiciones_' . $instalacion->id, $instalacion->ver_condiciones) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_condiciones_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="condiciones" class="form-label">Condiciones</label>
+                                <textarea class="form-control" name="condiciones" id="condiciones" rows="6" placeholder="Condiciones">{{ old('condiciones') }}</textarea>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @endif
             </div>
 
             {{-- <!-- Información de las Pistas -->
