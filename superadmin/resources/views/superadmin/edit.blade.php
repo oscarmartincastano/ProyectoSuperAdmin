@@ -59,6 +59,9 @@
                             @csrf
                         </form>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('superadmin.index') }}">Inicio</a>
+                    </li>
                 </ul>
             </div>
         </div>
