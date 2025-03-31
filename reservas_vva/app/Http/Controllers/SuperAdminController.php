@@ -20,144 +20,126 @@ class SuperAdminController extends Controller
     }
 
     public function edit($id)
-{
-    $ayuntamiento = SuperAdmin::find($id);
-
-    if (!$ayuntamiento) {
-        return redirect()->route('superadmin.index')->with('error', 'Ayuntamiento no encontrado.');
-    }
-
-    $bd_nombre = $ayuntamiento->bd_nombre;
-
-    // Configuración de la conexión a la base de datos secundaria
-    $secondaryDbConfig = [
-        'driver' => 'mysql',
-        'host' => '127.0.0.1',
-        'port' => '3306',
-        'database' => $bd_nombre,
-        'username' => 'reservas_vva',
-        'password' => '#3p720hqK',
-        'charset' => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci',
-        'prefix' => '',
-        'strict' => true,
-        'engine' => null,
-    ];
-
-    config(['database.connections.secondary' => $secondaryDbConfig]);
-    $secondaryConnection = DB::connection('secondary');
-
-    // Usar la conexión 'superadmin'
-    $superadminConnection = DB::connection('superadmin');
-
-    $aDatos = [];
-    $aDatos['instalaciones'] = $secondaryConnection->table('instalaciones')->get();
-    $aDatos['usuarios_superadmin'] = $superadminConnection->table('users')->get(); // Ejemplo de consulta a la conexión superadmin
-
-    // Deserializar el campo horario para cada instalación
-    foreach ($aDatos['instalaciones'] as $instalacion) {
-        $horario = @unserialize($instalacion->horario);
-
-        // Validar si el horario es un array
-        if (is_array($horario)) {
-            $instalacion->horario = $horario;
-        } else {
-            // Si no es un array válido, inicializarlo como un array vacío
-            $instalacion->horario = [];
+    {
+        $ayuntamiento = SuperAdmin::find($id);
+    
+        if (!$ayuntamiento) {
+            return redirect()->route('superadmin.index')->with('error', 'Ayuntamiento no encontrado.');
         }
-    }
-
-    return view('superadmin.edit', compact('ayuntamiento', 'aDatos'));
-}
-
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required',
-        'url' => 'required',
-        'bd_nombre' => 'required',
-    ]);
-
-    // Obtener el ayuntamiento
-    $ayuntamiento = SuperAdmin::find($id);
-
-    if (!$ayuntamiento) {
-        return redirect()->route('superadmin.index')->with('error', 'Ayuntamiento no encontrado.');
-    }
-
-    // Validar y procesar la URL
-    $url = $request->input('url');
-    if (!str_starts_with($url, 'https://gestioninstalacion.es/')) {
-        if (str_starts_with($url, 'http://') || str_contains($url, 'gestioninstalacion.es')) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['url' => 'La URL debe comenzar con https://gestioninstalacion.es/ o solo el nombre.']);
+    
+        $bd_nombre = $ayuntamiento->bd_nombre;
+    
+        // Configuración de la conexión a la base de datos secundaria
+        $secondaryDbConfig = [
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'port' => '3306',
+            'database' => $bd_nombre,
+            'username' => 'reservas_vva',
+            'password' => '#3p720hqK',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ];
+    
+        config(['database.connections.secondary' => $secondaryDbConfig]);
+        $secondaryConnection = DB::connection('secondary');
+    
+        // Obtener los servicios desde las tablas
+        $servicios = $secondaryConnection->table('servicios')->get();
+        $serviciosAdicionales = $secondaryConnection->table('servicios_adicionales')->get();
+    
+        // Obtener las instalaciones y deserializar los campos
+        $aDatos = [];
+        $aDatos['instalaciones'] = $secondaryConnection->table('instalaciones')->get();
+        foreach ($aDatos['instalaciones'] as $instalacion) {
+            $instalacion->horario = @unserialize($instalacion->horario) ?: [];
+            $instalacion->servicios = @unserialize($instalacion->servicios) ?: [];
         }
-        $url = 'https://gestioninstalacion.es/' . str_replace(' ', '-', $url);
+    
+        return view('superadmin.edit', compact('ayuntamiento', 'aDatos', 'servicios', 'serviciosAdicionales'));
     }
-    $url = strtolower($url);
 
-    // Actualizar los datos del ayuntamiento
-    $ayuntamiento->update([
-        'name' => $request->input('name'),
-        'url' => $url,
-        'bd_nombre' => $request->input('bd_nombre'),
-    ]);
-
-    // Configurar la conexión a la base de datos secundaria
-    $bd_nombre = $request->input('bd_nombre');
-    $secondaryDbConfig = [
-        'driver' => 'mysql',
-        'host' => '127.0.0.1',
-        'port' => '3306',
-        'database' => $bd_nombre,
-        'username' => 'reservas_vva',
-        'password' => '#3p720hqK',
-        'charset' => 'utf8mb4',
-        'collation' => 'utf8mb4_unicode_ci',
-        'prefix' => '',
-        'strict' => true,
-        'engine' => null,
-    ];
-
-    config(['database.connections.secondary' => $secondaryDbConfig]);
-    $secondaryConnection = DB::connection('secondary');
-
-    // Actualizar las instalaciones existentes
-    foreach ($request->all() as $key => $value) {
-        if (preg_match('/^nombre_(\d+)$/', $key, $matches)) {
-            $instalacionId = $matches[1];
-
-            $secondaryConnection
-                ->table('instalaciones')
-                ->where('id', $instalacionId)
-                ->update([
-                    'nombre' => $value,
-                    'direccion' => $request->input("direccion_$instalacionId"),
-                    'tlfno' => $request->input("tlfno_$instalacionId"),
-                    'html_normas' => $request->input("html_normas_$instalacionId"),
-                    'servicios' => $request->input("servicios_$instalacionId"),
-                    'horario' => serialize($request->input("horario_$instalacionId")),
-                    'slug' => $request->input("slug_$instalacionId"),
-                    'politica' => $request->input("politica_$instalacionId"),
-                    'condiciones' => $request->input("condiciones_$instalacionId"),
-                    'ver_normas' => $request->input("ver_normas_$instalacionId"),
-                    'ver_servicios' => $request->input("ver_servicios_$instalacionId"),
-                    'ver_horario' => $request->input("ver_horario_$instalacionId"),
-                    'ver_politica' => $request->input("ver_politica_$instalacionId"),
-                    'ver_condiciones' => $request->input("ver_condiciones_$instalacionId"),
-                ]);
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'url' => 'required',
+            'bd_nombre' => 'required',
+        ]);
+    
+        // Obtener el ayuntamiento
+        $ayuntamiento = SuperAdmin::find($id);
+    
+        if (!$ayuntamiento) {
+            return redirect()->route('superadmin.index')->with('error', 'Ayuntamiento no encontrado.');
         }
+    
+        // Validar y procesar la URL
+        $url = $request->input('url');
+        if (!str_starts_with($url, 'https://gestioninstalacion.es/')) {
+            if (str_starts_with($url, 'http://') || str_contains($url, 'gestioninstalacion.es')) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->withErrors(['url' => 'La URL debe comenzar con https://gestioninstalacion.es/ o solo el nombre.']);
+            }
+            $url = 'https://gestioninstalacion.es/' . str_replace(' ', '-', $url);
+        }
+        $url = strtolower($url);
+    
+        // Actualizar los datos del ayuntamiento
+        $ayuntamiento->update([
+            'name' => $request->input('name'),
+            'url' => $url,
+            'bd_nombre' => $request->input('bd_nombre'),
+        ]);
+    
+        // Configurar la conexión a la base de datos secundaria
+        $bd_nombre = $request->input('bd_nombre');
+        $secondaryDbConfig = [
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'port' => '3306',
+            'database' => $bd_nombre,
+            'username' => 'reservas_vva',
+            'password' => '#3p720hqK',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ];
+    
+        config(['database.connections.secondary' => $secondaryDbConfig]);
+        $secondaryConnection = DB::connection('secondary');
+    
+        // Actualizar las instalaciones existentes
+        foreach ($request->all() as $key => $value) {
+            if (preg_match('/^nombre_(\d+)$/', $key, $matches)) {
+                $instalacionId = $matches[1];
+    
+                $secondaryConnection
+                    ->table('instalaciones')
+                    ->where('id', $instalacionId)
+                    ->update([
+                        'nombre' => $value,
+                        'direccion' => $request->input("direccion_$instalacionId"),
+                        'tlfno' => $request->input("tlfno_$instalacionId"),
+                        'html_normas' => $request->input("html_normas_$instalacionId"),
+                        'servicios' => serialize($request->input("servicios_$instalacionId")), // Serializar los servicios seleccionados
+                        'horario' => serialize($request->input("horario_$instalacionId")), // Serializar el horario
+                        'slug' => $request->input("slug_$instalacionId"),
+                        'politica' => $request->input("politica_$instalacionId"),
+                        'condiciones' => $request->input("condiciones_$instalacionId"),
+                    ]);
+            }
+        }
+    
+        return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento actualizado con éxito.');
     }
-
-    // Verificar si se han enviado datos para una nueva instalación
-    if ($request->has('nombre') && $request->has('direccion')) {
-        $this->agregarInstalacion($request, $secondaryConnection);
-    }
-
-    return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento actualizado con éxito.');
-}
 
 private function agregarInstalacion(Request $request, $secondaryConnection)
 {
@@ -204,16 +186,22 @@ public function destroy($id)
     $bdNombre = $ayuntamiento->bd_nombre;
 
     try {
-        // Eliminar la base de datos si existe
-        DB::statement("DROP DATABASE IF EXISTS `$bdNombre`");
+        // Verificar cuántos registros están conectados a la misma base de datos
+        $registrosConectados = SuperAdmin::where('bd_nombre', $bdNombre)->count();
+
+        if ($registrosConectados > 1) {
+            // Si hay más de un registro conectado, eliminar solo el registro actual
+            $ayuntamiento->delete();
+        } else {
+            // Si solo hay un registro conectado, eliminar la base de datos y el registro
+            DB::statement("DROP DATABASE IF EXISTS `$bdNombre`");
+            $ayuntamiento->delete();
+        }
     } catch (\Exception $e) {
-        return redirect()->route('superadmin.index')->with('error', 'Error al eliminar la base de datos: ' . $e->getMessage());
+        return redirect()->route('superadmin.index')->with('error', 'Error al eliminar el registro o la base de datos: ' . $e->getMessage());
     }
 
-    // Eliminar el registro del ayuntamiento
-    $ayuntamiento->delete();
-
-    return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento y base de datos eliminados con éxito.');
+    return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento eliminado con éxito.');
 }
 
     public function create()
@@ -256,58 +244,71 @@ public function destroy($id)
         // Convertir la URL a minúsculas
         $url = strtolower($url);
     
-        // Crear la base de datos
+        // Crear o conectar a la base de datos
         $bdNombre = $request->input('bd_nombre');
     
         try {
             // Verificar si la base de datos ya existe
             $databaseExists = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$bdNombre]);
     
-            if (!empty($databaseExists)) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->withErrors(['bd_nombre' => 'La base de datos ya existe. Por favor, elige un nuevo nombre.']);
-            }
+            if (empty($databaseExists)) {
+                // Crear la base de datos si no existe
+                DB::statement("CREATE DATABASE `$bdNombre` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
     
-            // Crear la base de datos
-            DB::statement("CREATE DATABASE `$bdNombre` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                // Configurar una conexión dinámica para la nueva base de datos
+                config(['database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => env('DB_HOST', '127.0.0.1'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => $bdNombre,
+                    'username' => env('DB_USERNAME', 'reservas_vva'),
+                    'password' => env('DB_PASSWORD', '#3p720hqK'),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'strict' => true,
+                ]]);
     
-            // Configurar una conexión dinámica para la nueva base de datos
-            config(['database.connections.dynamic' => [
-                'driver' => 'mysql',
-                'host' => env('DB_HOST', '127.0.0.1'),
-                'port' => env('DB_PORT', '3306'),
-                'database' => $bdNombre,
-                'username' => env('DB_USERNAME', 'root'),
-                'password' => env('DB_PASSWORD', ''),
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix' => '',
-                'strict' => true,
-            ]]);
+                $dynamicConnection = DB::connection('dynamic');
     
-            $dynamicConnection = DB::connection('dynamic');
+                // Leer el archivo SQL y ejecutar las consultas
+                $sqlFilePath = base_path('plantilla.sql'); // Ruta al archivo SQL
+                $sql = file_get_contents($sqlFilePath);
     
-            // Leer el archivo SQL y ejecutar las consultas
-            $sqlFilePath = base_path('plantilla.sql'); // Ruta al archivo SQL
-            $sql = file_get_contents($sqlFilePath);
+                // Dividir las consultas por punto y coma
+                $queries = array_filter(array_map('trim', explode(';', $sql)));
     
-            // Dividir las consultas por punto y coma
-            $queries = array_filter(array_map('trim', explode(';', $sql)));
-    
-            foreach ($queries as $query) {
-                if (!empty($query)) {
-                    $dynamicConnection->statement($query);
+                foreach ($queries as $query) {
+                    if (!empty($query)) {
+                        $dynamicConnection->statement($query);
+                    }
                 }
+            } else {
+                // Conectar a la base de datos existente
+                config(['database.connections.dynamic' => [
+                    'driver' => 'mysql',
+                    'host' => env('DB_HOST', '127.0.0.1'),
+                    'port' => env('DB_PORT', '3306'),
+                    'database' => $bdNombre,
+                    'username' => env('DB_USERNAME', 'reservas_vva'),
+                    'password' => env('DB_PASSWORD', '#3p720hqK'),
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'strict' => true,
+                ]]);
+    
+                DB::connection('dynamic'); // Establecer la conexión
             }
         } catch (\Exception $e) {
             // Si ocurre un error, eliminar la base de datos creada y devolver el error
-            DB::statement("DROP DATABASE IF EXISTS `$bdNombre`");
+            if (empty($databaseExists)) {
+                DB::statement("DROP DATABASE IF EXISTS `$bdNombre`");
+            }
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors(['error' => 'Error al crear la base de datos: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Error al crear o conectar a la base de datos: ' . $e->getMessage()]);
         }
     
         // Crear el ayuntamiento en la conexión 'superadmin'

@@ -173,16 +173,52 @@
                                 </div>
 
                                 <!-- Campo: Servicios -->
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label for="servicios_{{ $instalacion->id }}"
                                         class="form-label">Servicios</label>
-                                    <textarea class="form-control @error('servicios_' . $instalacion->id) is-invalid @enderror"
-                                        name="servicios_{{ $instalacion->id }}" id="servicios_{{ $instalacion->id }}" placeholder="Servicios">{{ old('servicios_' . $instalacion->id, $instalacion->servicios) }}</textarea>
-                                    @error('servicios_' . $instalacion->id)
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
+                                    <div class="border p-3 rounded bg-light">
+                                        <h6 class="text-primary">Selecciona los servicios disponibles:</h6>
+                                        <div class="row">
+                                            @if ($servicios->isEmpty() && $serviciosAdicionales->isEmpty())
+                                                <div class="col-12">
+                                                    <p class="text-danger">No hay servicios disponibles para
+                                                        seleccionar.</p>
+                                                </div>
+                                            @else
+                                                @foreach ($servicios as $servicio)
+                                                    <div class="col-md-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="servicio_{{ $instalacion->id }}_{{ $servicio->id }}"
+                                                                name="servicios_{{ $instalacion->id }}[]"
+                                                                value="{{ $servicio->id }}"
+                                                                @if (in_array($servicio->id, $instalacion->servicios ?? [])) checked @endif>
+                                                            <label class="form-check-label"
+                                                                for="servicio_{{ $instalacion->id }}_{{ $servicio->id }}">
+                                                                {{ $servicio->nombre }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+
+                                                @foreach ($serviciosAdicionales as $servicioAdicional)
+                                                    <div class="col-md-4">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="servicio_adicional_{{ $instalacion->id }}_{{ $servicioAdicional->id }}"
+                                                                name="servicios_{{ $instalacion->id }}[]"
+                                                                value="{{ $servicioAdicional->id }}"
+                                                                @if (in_array($servicioAdicional->id, $instalacion->servicios ?? [])) checked @endif>
+                                                            <label class="form-check-label"
+                                                                for="servicio_adicional_{{ $instalacion->id }}_{{ $servicioAdicional->id }}">
+                                                                {{ $servicioAdicional->nombre }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
                                         </div>
-                                    @enderror
+                                    </div>
                                 </div>
 
                                 <!-- Campo: Horario -->
@@ -387,7 +423,8 @@
                             <div class="col-md-6 mb-3">
                                 <label for="nombre" class="form-label">Nombre</label>
                                 <input type="text" class="form-control @error('nombre') is-invalid @enderror"
-                                    id="nombre" name="nombre" value="{{ old('nombre') }}" placeholder="Nombre">
+                                    id="nombre" name="nombre" value="{{ old('nombre') }}"
+                                    placeholder="Nombre">
                                 @error('nombre')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -434,15 +471,49 @@
                             </div>
 
                             <!-- Campo: Servicios -->
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label for="servicios" class="form-label">Servicios</label>
-                                <textarea class="form-control @error('servicios') is-invalid @enderror" name="servicios" id="servicios"
-                                    placeholder="Servicios">{{ old('servicios') }}</textarea>
-                                @error('servicios')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
+                                <div class="border p-3 rounded bg-light">
+                                    <h6 class="text-primary">Selecciona los servicios disponibles:</h6>
+                                    <div class="row">
+                                        @if ($servicios->isEmpty() && $serviciosAdicionales->isEmpty())
+                                            <div class="col-12">
+                                                <p class="text-danger">No hay servicios disponibles para seleccionar.
+                                                </p>
+                                            </div>
+                                        @else
+                                            @foreach ($servicios as $servicio)
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            id="servicio_{{ $servicio->id }}" name="servicios[]"
+                                                            value="{{ $servicio->id }}"
+                                                            @if (is_array(old('servicios')) && in_array($servicio->id, old('servicios'))) checked @endif>
+                                                        <label class="form-check-label"
+                                                            for="servicio_{{ $servicio->id }}">
+                                                            {{ $servicio->nombre }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+
+                                            @foreach ($serviciosAdicionales as $servicioAdicional)
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            id="servicio_adicional_{{ $servicioAdicional->id }}"
+                                                            name="servicios[]" value="{{ $servicioAdicional->id }}"
+                                                            @if (is_array(old('servicios')) && in_array($servicioAdicional->id, old('servicios'))) checked @endif>
+                                                        <label class="form-check-label"
+                                                            for="servicio_adicional_{{ $servicioAdicional->id }}">
+                                                            {{ $servicioAdicional->nombre }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
                                     </div>
-                                @enderror
+                                </div>
                             </div>
 
                             <!-- Campo: Horario -->
