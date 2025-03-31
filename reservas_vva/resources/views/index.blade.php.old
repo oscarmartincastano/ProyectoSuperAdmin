@@ -1,0 +1,47 @@
+@extends('layouts.home')
+@section('content')
+    <div class="row" style="background-image: linear-gradient(160deg, #49b6ea 53%, #473bf6 100%);padding: 3%;">
+
+        <h1 class="title text-center mt-5 titulo-pagina" style="color:white;">GESTIÓN DE PISTAS DEPORTIVAS</h1>
+
+    </div>
+<div class="container">
+    <div class="row" style="place-content: center">
+
+        <p class="mt-5 mb-5" style="font-size: 1.3em; text-align: center;"> La mejor aplicación para gestionar alquileres de instalaciones deportivas, al mejor precio.</p>
+        <div class="col-md-3" style="text-align: center;"><img src="/img/user-block.png" ><h5  class=" text-center mt-5 titulo-pagina" style="font-size: 1.5em;">Reservas Continuas</h5>
+           <p style="text-align: justify"> Haz fácilmente reservas continuas para bloquear pistas e igual puedes eliminar éstas reservas si un día quieres alquilar la pista deportiva libremente.</p></div>
+        <div class="col-md-3" style="text-align: center;"><img src="/img/precio-dinamico.png" ><h5  class="text-center mt-5 titulo-pagina" style="font-size: 1.5em;">Precios Dinámicos</h5>
+            <p style="text-align: justify">Juega con los precios, una aplicación flexible que te permiten cambiar los precios en función de las necesidades de la instalación sin tediosos procesos.</p></div>
+        <div class="col-md-3" style="text-align: center;"><img src="/img/reservas-periodicas.png" ><h5  class="text-center mt-5 titulo-pagina" style="font-size: 1.5em;">Bloqueo de usuarios</h5>
+            <p style="text-align: justify">Si tienes usuarios que no se presentan o que no hacen un buen uso de la aplicación puedes bloquearlos desde tu panel de administración</p></div>
+    </div>
+
+
+    <h3 class="title text-center mt-5 titulo-pagina">Selecciona la instalación</h3>
+    <div class="divider mb-5" style="padding: 5px !important;">
+        <div></div>
+    </div>
+    <div class="row" style="place-content: center">
+        <div class="col-md-4" style="padding: calc(var(--bs-gutter-x) * .5); background-image: url('https://www.elquincenaldelospedroches.es/wp-content/uploads/2021/01/Plaza-Espana-Villanueva-Cordoba-cuarentena_1447666276_118780206_667x375.jpg');background-position: center;">
+        <a style="
+                    display: flex;
+                    align-content: center;
+                    align-items: center;
+                    justify-content: center;
+
+                    font-family: 'Fira Sans', sans-serif;
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    color: white;
+                    font-size:2em" href="/vvadecordoba">
+            <img style="visibility: hidden" src="https://www.elquincenaldelospedroches.es/wp-content/uploads/2021/01/Plaza-Espana-Villanueva-Cordoba-cuarentena_1447666276_118780206_667x375.jpg">
+            <span style="position: absolute">Villanueva de córdoba</span>
+        </a>
+        </div>
+
+
+    </div>
+</div>
+
+    @endsection

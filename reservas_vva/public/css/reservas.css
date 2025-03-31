@@ -1,0 +1,105 @@
+
+@media(max-width: 992px) {
+
+    /* #ver-mas-zonas{
+        display: block;
+        position: absolute;
+        background-color: #4e8857;
+        border: 1px solid white;
+        border-radius: 50px;
+        padding: 1%;
+        display: flex;
+        align-items: center;
+        left: 96%;
+        top: 5%;
+    }
+
+    #ver-zonas-anteriores{
+        display: block;
+        position: absolute;
+        background-color: #4e8857;
+        border: 1px solid white;
+        border-radius: 50px;
+        padding: 1%;
+        display: flex;
+        align-items: center;
+        left: 0.5%;
+        top: 5%;
+    } */
+
+    .pistas-horario .celda {
+        text-align: center !important;
+        font-size: 0.7em;}
+
+
+    .pistas-horario {
+        background: lightgray;
+        display: flex !important;
+        position: relative;
+        min-width: 160px !important;
+    }
+
+
+    .tabla-horario {
+        display: block !important;
+    }
+
+    .tramos {
+        display: flex !important;
+    }
+
+    .horas-tramos {
+        display: block !important;
+    }
+
+    .horas-tramos-pistas {
+        display: flex !important;
+        width: 100% !important;
+    }
+
+    .horas-tramos-pistas>div, .horas-tramos-pistas>div>div, .pistas-horario .celda:not(:first-child) {
+        width: 100% !important;
+    }
+
+    .horas-tramos-pistas .celda {
+        height:40px !important;
+        width: 100% !important;
+    }
+    .block-before{
+        display: none !important;
+    }
+
+    .slots-horas {
+        display: block !important;
+    }
+    .pistas-horario .celda:first-child {
+        padding: 19px;
+    }
+    h1 {
+        font-size: 2rem !important;
+    }
+    .contenido-titulo {
+        padding: 16px;
+    }
+    .card-reserva {
+        width: auto !important;
+    }
+    .page-header>div {
+        display: none;
+    }
+    .filtros>div {
+        text-align: center;
+        width: 100%
+    }
+    .show-responsive {
+        display: block !important;
+    }
+    .slot-reserva a {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+    }
+    .contenido-principal {
+        padding: 50px 15px;
+    }
+}
