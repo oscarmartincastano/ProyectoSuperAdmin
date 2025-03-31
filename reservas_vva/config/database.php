@@ -3,7 +3,6 @@
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -34,7 +33,6 @@ return [
     */
 
     'connections' => [
-
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
@@ -64,14 +62,30 @@ return [
                 'NO_ZERO_DATE',
                 'ERROR_FOR_DIVISION_BY_ZERO',
                 'NO_AUTO_CREATE_USER',
-                'NO_ENGINE_SUBSTITUTION'
+                'NO_ENGINE_SUBSTITUTION',
             ],
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'options' => extension_loaded('pdo_mysql')
+                ? array_filter([
+                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                ])
+                : [],
         ],
-        
+
+        'superadmin' => [
+        'driver' => env('DB_SUPERADMIN_CONNECTION', 'mysql'),
+        'host' => env('DB_SUPERADMIN_HOST', '127.0.0.1'),
+        'port' => env('DB_SUPERADMIN_PORT', '3306'),
+        'database' => env('DB_SUPERADMIN_DATABASE', 'forge'),
+        'username' => env('DB_SUPERADMIN_USERNAME', 'forge'),
+        'password' => env('DB_SUPERADMIN_PASSWORD', ''),
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'strict' => true,
+        'engine' => null,
+    ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
@@ -99,7 +113,6 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
-
     ],
 
     /*
@@ -127,12 +140,11 @@ return [
     */
 
     'redis' => [
-
         'client' => env('REDIS_CLIENT', 'phpredis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [
@@ -150,7 +162,5 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
-
     ],
-
 ];

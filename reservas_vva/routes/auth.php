@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SuperAdminController;
 
 Route::get('/register', [RegisteredUserController::class, 'create'])
                 ->middleware('guest')
@@ -64,3 +65,21 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->midd
 
 Route::post('/logout-manager', [AuthenticatedSessionController::class, 'destroymanager'])
 ->name('logout.manager');
+
+
+Route::prefix('superadmin')->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::get('/create-user', [SuperAdminController::class, 'showCreateUserForm'])->name('superadmin.showCreateUserForm');
+        Route::post('/create-user', [SuperAdminController::class, 'createUser'])->name('superadmin.createUser');
+    });
+
+    Route::get('/', [SuperAdminController::class, 'index'])->name('superadmin.index');
+    Route::get('/{id}/edit', [SuperAdminController::class, 'edit'])->name('superadmin.edit');
+    Route::put('/{id}/update', [SuperAdminController::class, 'update'])->name('superadmin.update');
+    Route::delete('/{id}/destroy', [SuperAdminController::class, 'destroy'])->name('superadmin.destroy');
+    Route::get('/create', [SuperAdminController::class, 'create'])->name('superadmin.create');
+    Route::post('/store', [SuperAdminController::class, 'store'])->name('superadmin.store');
+    Route::get('/login', [SuperAdminController::class, 'login'])->name('superadmin.login');
+    Route::post('/login', [SuperAdminController::class, 'authenticate'])->name('superadmin.authenticate');
+    Route::get('/logout', [SuperAdminController::class, 'logout'])->name('superadmin.logout');
+});
