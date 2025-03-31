@@ -43,6 +43,11 @@
 </head>
 
 <body>
+    @if (!Auth::check())
+    <script>
+        window.location.href = "{{ route('superadmin.login') }}";
+    </script>
+@endif
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
@@ -54,13 +59,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="">Cerrar sesión</a>
-                        <form id="logout-form" action="" method="POST" style="display: none;">
-                            @csrf
-                        </form>
+                        <a class="nav-link" href="{{ route('superadmin.index') }}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('superadmin.index') }}">Inicio</a>
+                        <a class="nav-link" href="{{ route('superadmin.showCreateUserForm') }}">Crear Usuario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('superadmin.logout') }}">Cerrar sesión</a>
                     </li>
                 </ul>
             </div>
