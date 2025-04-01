@@ -3,7 +3,11 @@
 @section('header', 'Edición')
 
 @section('content')
-
+@if (!Auth::check())
+<script>
+    window.location.href = "{{ route('superadmin.login') }}";
+</script>
+@endif
         {{-- Formulario para editar un ayuntamiento --}}
         <form action="{{ route('superadmin.update', $ayuntamiento->id) }}" method="POST"
             class="bg-light p-4 rounded shadow-sm">

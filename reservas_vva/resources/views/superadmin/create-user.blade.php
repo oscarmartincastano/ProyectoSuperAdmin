@@ -4,6 +4,11 @@
 @section('header', 'Crear Nuevo Usuario')
 
 @section('content')
+@if (!Auth::check())
+<script>
+    window.location.href = "{{ route('superadmin.login') }}";
+</script>
+@endif
     <form action="{{ route('superadmin.createUser') }}" method="POST" class="mt-4">
         @csrf
         <div class="mb-3">

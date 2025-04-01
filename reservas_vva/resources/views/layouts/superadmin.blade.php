@@ -268,13 +268,8 @@
 </head>
 
 <body>
-    @if (!Auth::check())
-        <script>
-            window.location.href = "{{ route('superadmin.login') }}";
-        </script>
-    @endif
     
-    <!-- Navbar -->
+    <!-- Navbar-->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ route('superadmin.index') }}">
@@ -284,23 +279,25 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link @if (Route::currentRouteName() == 'superadmin.index') active @endif" href="{{ route('superadmin.index') }}">
-                            <i class="fas fa-home me-1"></i> Inicio
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @if (Route::currentRouteName() == 'superadmin.showCreateUserForm') active @endif" href="{{ route('superadmin.showCreateUserForm') }}">
-                            <i class="fas fa-user-plus me-1"></i> Crear Usuario
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('superadmin.logout') }}">
-                            <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
-                        </a>
-                    </li>
-                </ul>
+                @if (!Route::is('superadmin.login')) <!-- Ocultar el menú si la ruta es login -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link @if (Route::currentRouteName() == 'superadmin.index') active @endif" href="{{ route('superadmin.index') }}">
+                                <i class="fas fa-home me-1"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @if (Route::currentRouteName() == 'superadmin.showCreateUserForm') active @endif" href="{{ route('superadmin.showCreateUserForm') }}">
+                                <i class="fas fa-user-plus me-1"></i> Crear Usuario
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('superadmin.logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                @endif
             </div>
         </div>
     </nav>

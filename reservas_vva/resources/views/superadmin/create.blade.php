@@ -4,6 +4,11 @@
 @section('header', 'Crear Nuevo Ayuntamiento')
 
 @section('content')
+@if (!Auth::check())
+<script>
+    window.location.href = "{{ route('superadmin.login') }}";
+</script>
+@endif
     <h1 class="mb-4 text-center">Formulario de Creación</h1>
 
     {{-- Formulario para crear un nuevo ayuntamiento --}}

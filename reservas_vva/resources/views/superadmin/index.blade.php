@@ -4,6 +4,11 @@
 @section('header', 'Listado de Ayuntamientos')
 
 @section('content')
+@if (!Auth::check())
+<script>
+    window.location.href = "{{ route('superadmin.login') }}";
+</script>
+@endif
     <a href="{{ route('superadmin.create') }}" class="btn btn-success mb-3">Nuevo Ayuntamiento</a>
     <table class="table table-striped">
         <thead>
