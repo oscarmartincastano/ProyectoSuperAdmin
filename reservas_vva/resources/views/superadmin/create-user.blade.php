@@ -1,6 +1,5 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Crear Usuario')
 @section('header', 'Crear Nuevo Usuario')
 
 @section('content')

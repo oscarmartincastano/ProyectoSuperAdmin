@@ -1,6 +1,5 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Listado de Ayuntamientos')
 @section('header', 'Listado de Ayuntamientos')
 
 @section('content')

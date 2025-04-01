@@ -132,7 +132,7 @@ class SuperAdminController extends Controller
                     $request->validate([
                         "nombre_$instalacionId" => 'required',
                         "direccion_$instalacionId" => 'required',
-                        "tlfno_$instalacionId" => 'nullable',
+                        "tlfno_$instalacionId" => 'required',
                         "html_normas_$instalacionId" => 'nullable',
                         "servicios_$instalacionId" => 'nullable',
                         "slug_$instalacionId" => 'required',
@@ -173,7 +173,7 @@ private function agregarInstalacion(Request $request, $secondaryConnection)
     $request->validate([
         'nombre' => 'required',
         'direccion' => 'required',
-        'tlfno' => 'nullable',
+        'tlfno' => 'required',
         'html_normas' => 'nullable',
         'servicios' => 'nullable',
         'slug' => 'required',
@@ -236,116 +236,155 @@ public function destroy($id)
     }
 
     public function store(Request $request)
-    {
-        set_time_limit(300); // Aumenta el límite a 300 segundos
-    
-        $request->validate([
-            'name' => 'required',
-            'url' => 'required',
-            'bd_nombre' => 'required', // Validar que el campo bd_nombre sea obligatorio
-        ]);
-    
-        // Obtener el valor del campo URL
-        $url = $request->input('url');
-    
-        // Validar y procesar la URL
-        if (empty($url)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['url' => 'El campo URL no puede estar vacío.']);
-        }
-    
-        if (!str_starts_with($url, 'https://gestioninstalacion.es/')) {
-            if (str_starts_with($url, 'http://') || str_contains($url, 'gestioninstalacion.es')) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->withErrors(['url' => 'La URL debe comenzar con https://gestioninstalacion.es/ o solo el nombre.']);
-            }
-    
-            $url = 'https://gestioninstalacion.es/' . str_replace(' ', '-', $url);
-        }
-    
-        // Convertir la URL a minúsculas
-        $url = strtolower($url);
-    
-        // Crear o conectar a la base de datos
-        $bdNombre = $request->input('bd_nombre');
-    
-        try {
-            // Verificar si la base de datos ya existe
-            $databaseExists = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$bdNombre]);
-    
-            if (empty($databaseExists)) {
-                // Crear la base de datos si no existe
-                DB::statement("CREATE DATABASE `$bdNombre` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    
-                // Configurar una conexión dinámica para la nueva base de datos
-                config(['database.connections.dynamic' => [
-                    'driver' => 'mysql',
-                    'host' => env('DB_HOST', '127.0.0.1'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => $bdNombre,
-                    'username' => env('DB_USERNAME', 'reservas_vva'),
-                    'password' => env('DB_PASSWORD', '#3p720hqK'),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-                    'strict' => true,
-                ]]);
-    
-                $dynamicConnection = DB::connection('dynamic');
-    
-                // Leer el archivo SQL y ejecutar las consultas
-                $sqlFilePath = base_path('plantilla.sql'); // Ruta al archivo SQL
-                $sql = file_get_contents($sqlFilePath);
-    
-                // Dividir las consultas por punto y coma
-                $queries = array_filter(array_map('trim', explode(';', $sql)));
-    
-                foreach ($queries as $query) {
-                    if (!empty($query)) {
-                        $dynamicConnection->statement($query);
-                    }
-                }
-            } else {
-                // Conectar a la base de datos existente
-                config(['database.connections.dynamic' => [
-                    'driver' => 'mysql',
-                    'host' => env('DB_HOST', '127.0.0.1'),
-                    'port' => env('DB_PORT', '3306'),
-                    'database' => $bdNombre,
-                    'username' => env('DB_USERNAME', 'reservas_vva'),
-                    'password' => env('DB_PASSWORD', '#3p720hqK'),
-                    'charset' => 'utf8mb4',
-                    'collation' => 'utf8mb4_unicode_ci',
-                    'prefix' => '',
-                    'strict' => true,
-                ]]);
-    
-                DB::connection('dynamic'); // Establecer la conexión
-            }
-        } catch (\Exception $e) {
-            // Si ocurre un error, eliminar la base de datos creada y devolver el error
-            if (empty($databaseExists)) {
-                DB::statement("DROP DATABASE IF EXISTS `$bdNombre`");
-            }
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors(['error' => 'Error al crear o conectar a la base de datos: ' . $e->getMessage()]);
-        }
-    
-        // Crear el ayuntamiento en la conexión 'superadmin'
-        SuperAdmin::on('superadmin')->create([
-            'name' => $request->input('name'),
-            'url' => $url,
-            'bd_nombre' => $bdNombre, // Guardar el nombre de la base de datos
-        ]);
-    
-        return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento creado con éxito.');
+{
+    set_time_limit(300); // Aumenta el límite a 300 segundos
+
+    $request->validate([
+        'name' => 'required',
+        'url' => 'required',
+        'bd_nombre' => 'required', // Validar que el campo bd_nombre sea obligatorio
+        'direccion' => 'required',
+        'tlfno' => 'required',
+        'slug' => 'required',
+    ]);
+
+    // Obtener el valor del campo URL
+    $url = $request->input('url');
+
+    // Validar y procesar la URL
+    if (empty($url)) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->withErrors(['url' => 'El campo URL no puede estar vacío.']);
     }
+
+    if (!str_starts_with($url, 'https://gestioninstalacion.es/')) {
+        if (str_starts_with($url, 'http://') || str_contains($url, 'gestioninstalacion.es')) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors(['url' => 'La URL debe comenzar con https://gestioninstalacion.es/ o solo el nombre.']);
+        }
+
+        $url = 'https://gestioninstalacion.es/' . str_replace(' ', '-', $url);
+    }
+
+    // Convertir la URL a minúsculas
+    $url = strtolower($url);
+
+    // Crear o conectar a la base de datos
+    $bdNombre = $request->input('bd_nombre');
+
+    try {
+        // Verificar si la base de datos ya existe
+        $databaseExists = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$bdNombre]);
+
+        if (empty($databaseExists)) {
+            // Crear la base de datos si no existe
+            DB::statement("CREATE DATABASE `$bdNombre` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+
+            // Configurar una conexión dinámica para la nueva base de datos
+            config(['database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => env('DB_HOST', '127.0.0.1'),
+                'port' => env('DB_PORT', '3306'),
+                'database' => $bdNombre,
+                'username' => env('DB_USERNAME', 'reservas_vva'),
+                'password' => env('DB_PASSWORD', '#3p720hqK'),
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'strict' => true,
+            ]]);
+
+            $dynamicConnection = DB::connection('dynamic');
+
+            // Leer el archivo SQL y ejecutar las consultas
+            $sqlFilePath = base_path('plantilla.sql'); // Ruta al archivo SQL
+            $sql = file_get_contents($sqlFilePath);
+
+            // Dividir las consultas por punto y coma
+            $queries = array_filter(array_map('trim', explode(';', $sql)));
+
+            foreach ($queries as $query) {
+                if (!empty($query)) {
+                    $dynamicConnection->statement($query);
+                }
+            }
+
+            // Insertar una nueva instalación en la tabla `instalaciones`
+            $dynamicConnection->table('instalaciones')->insert([
+                'nombre' => $request->input('name'),
+                'direccion' => $request->input('direccion'),
+                'tlfno' => $request->input('tlfno'),
+                'slug' => $request->input('slug'),
+                'tipo_reservas_id' => 1, // Puedes ajustar este valor según sea necesario
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } else {
+            // Conectar a la base de datos existente
+            config(['database.connections.dynamic' => [
+                'driver' => 'mysql',
+                'host' => env('DB_HOST', '127.0.0.1'),
+                'port' => env('DB_PORT', '3306'),
+                'database' => $bdNombre,
+                'username' => env('DB_USERNAME', 'reservas_vva'),
+                'password' => env('DB_PASSWORD', '#3p720hqK'),
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'strict' => true,
+            ]]);
+
+            $dynamicConnection = DB::connection('dynamic');
+
+            // Verificar si hay instalaciones en la tabla
+            $instalacion = $dynamicConnection->table('instalaciones')->first();
+
+            if ($instalacion) {
+                // Actualizar la instalación existente
+                $dynamicConnection->table('instalaciones')->where('id', $instalacion->id)->update([
+                    'nombre' => $request->input('name'),
+                    'direccion' => $request->input('direccion'),
+                    'tlfno' => $request->input('tlfno'),
+                    'slug' => $request->input('slug'),
+                    'updated_at' => now(),
+                ]);
+            } else {
+                // Crear una nueva instalación si no hay registros
+                $dynamicConnection->table('instalaciones')->insert([
+                    'nombre' => $request->input('name'),
+                    'direccion' => $request->input('direccion'),
+                    'tlfno' => $request->input('tlfno'),
+                    'slug' => $request->input('slug'),
+                    'tipo_reservas_id' => 1, // Puedes ajustar este valor según sea necesario
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+    } catch (\Exception $e) {
+        // Si ocurre un error, eliminar la base de datos creada y devolver el error
+        if (empty($databaseExists)) {
+            DB::statement("DROP DATABASE IF EXISTS `$bdNombre`");
+        }
+        return redirect()
+            ->back()
+            ->withInput()
+            ->withErrors(['error' => 'Error al crear o conectar a la base de datos: ' . $e->getMessage()]);
+    }
+
+    // Crear el ayuntamiento en la conexión 'superadmin'
+    SuperAdmin::on('superadmin')->create([
+        'name' => $request->input('name'),
+        'url' => $url,
+        'bd_nombre' => $bdNombre, // Guardar el nombre de la base de datos
+    ]);
+
+    return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento creado con éxito.');
+}
 
     public function login()
     {

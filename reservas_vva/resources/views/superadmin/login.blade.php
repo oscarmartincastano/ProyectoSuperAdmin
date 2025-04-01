@@ -1,6 +1,5 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Iniciar Sesión')
 @section('header', 'Iniciar Sesión')
 
 @section('content')

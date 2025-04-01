@@ -1,6 +1,5 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Crear Ayuntamiento')
 @section('header', 'Crear Nuevo Ayuntamiento')
 
 @section('content')
@@ -9,13 +8,12 @@
     window.location.href = "{{ route('superadmin.login') }}";
 </script>
 @endif
-    <h1 class="mb-4 text-center">Formulario de Creación</h1>
 
     {{-- Formulario para crear un nuevo ayuntamiento --}}
     <form action="{{ route('superadmin.store') }}" method="POST" class="bg-light p-4 rounded shadow-sm">
         @csrf
         <div class="mb-3">
-            <label for="name" class="form-label">Nombre</label>
+            <label for="name" class="form-label">Nombre del ayuntamiento</label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
                 value="{{ old('name') }}" required>
             @error('name')
@@ -43,6 +41,38 @@
                     {{ $message }}
                 </div>
             @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="direccion" class="form-label">Direccion</label>
+            <input type="text" class="form-control @error('direccion') is-invalid @enderror" id="direccion"
+                name="direccion" value="{{ old('direccion') }}" required>
+            @error('direccion')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="tlfno" class="form-label">Teléfono</label>
+            <input type="text" class="form-control @error('tlfno') is-invalid @enderror" id="tlfno"
+                name="tlfno" value="{{ old('tlfno') }}" required>
+            @error('tlfno')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug"
+                value="{{ old('slug') }}" required>
+            @error('slug')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror   
         </div>
         <button type="submit" class="btn btn-primary">Crear</button>
     </form>
