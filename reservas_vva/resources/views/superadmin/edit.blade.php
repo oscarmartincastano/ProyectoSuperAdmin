@@ -1,80 +1,8 @@
-<!-- filepath: e:\xampp\htdocs\reservas_vva\resources\views\layouts\superadmin.blade.php -->
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.superadmin')
+@section('title', 'Editar Instlación')
+@section('header', 'Edición')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperAdmin - @yield('pagename')</title>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-    <!-- Custom Styles -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            /* Fondo claro */
-        }
-
-        .navbar {
-            background-color: #203a74;
-            /* Azul oscuro */
-        }
-
-        .navbar-brand,
-        .navbar-nav .nav-link {
-            color: white !important;
-        }
-
-        .navbar-brand:hover,
-        .navbar-nav .nav-link:hover {
-            color: #ef7d1a !important;
-            /* Naranja */
-        }
-
-        .active {
-            color: #ef7d1a !important;
-            /* Naranja para el enlace activo */
-        }
-    </style>
-</head>
-
-<body>
-    @if (!Auth::check())
-        <script>
-            window.location.href = "{{ route('superadmin.login') }}";
-        </script>
-    @endif
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">SuperAdmin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('superadmin.index') }}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('superadmin.showCreateUserForm') }}">Crear Usuario</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('superadmin.logout') }}">Cerrar sesión</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mt-4">
-        <h1 class="mb-4 text-center">Formulario de Edición</h1>
+@section('content')
 
         {{-- Formulario para editar un ayuntamiento --}}
         <form action="{{ route('superadmin.update', $ayuntamiento->id) }}" method="POST"
@@ -758,6 +686,4 @@
             }
         }
     </script> --}}
-</body>
-
-</html>
+@endsection
