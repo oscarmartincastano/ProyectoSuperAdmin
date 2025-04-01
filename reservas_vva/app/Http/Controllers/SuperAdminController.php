@@ -69,7 +69,7 @@ class SuperAdminController extends Controller
             'url' => 'required',
             'bd_nombre' => 'required',
         ]);
-    
+        
         // Obtener el ayuntamiento
         $ayuntamiento = SuperAdmin::find($id);
     
@@ -96,6 +96,7 @@ class SuperAdminController extends Controller
             'url' => $url,
             'bd_nombre' => $request->input('bd_nombre'),
         ]);
+
     
         // Configurar la conexión a la base de datos secundaria
         $bd_nombre = $request->input('bd_nombre');
@@ -116,25 +117,50 @@ class SuperAdminController extends Controller
         config(['database.connections.secondary' => $secondaryDbConfig]);
         $secondaryConnection = DB::connection('secondary');
     
-        // Actualizar las instalaciones existentes
-        foreach ($request->all() as $key => $value) {
-            if (preg_match('/^nombre_(\d+)$/', $key, $matches)) {
-                $instalacionId = $matches[1];
+        // Verificar si hay instalaciones en la base de datos secundaria
+        $instalaciones = $secondaryConnection->table('instalaciones')->count();
     
-                $secondaryConnection
-                    ->table('instalaciones')
-                    ->where('id', $instalacionId)
-                    ->update([
-                        'nombre' => $value,
-                        'direccion' => $request->input("direccion_$instalacionId"),
-                        'tlfno' => $request->input("tlfno_$instalacionId"),
-                        'html_normas' => $request->input("html_normas_$instalacionId"),
-                        'servicios' => serialize($request->input("servicios_$instalacionId")), // Serializar los servicios seleccionados
-                        'horario' => serialize($request->input("horario_$instalacionId")), // Serializar el horario
-                        'slug' => $request->input("slug_$instalacionId"),
-                        'politica' => $request->input("politica_$instalacionId"),
-                        'condiciones' => $request->input("condiciones_$instalacionId"),
+        if ($instalaciones == 0) {
+            // Si no hay instalaciones, llamar a la función agregarInstalacion
+            $this->agregarInstalacion($request, $secondaryConnection);
+        } else {
+            // Actualizar las instalaciones existentes
+            foreach ($request->all() as $key => $value) {
+                if (preg_match('/^nombre_(\d+)$/', $key, $matches)) {
+                    $instalacionId = $matches[1];
+
+                    $request->validate([
+                        "nombre_$instalacionId" => 'required',
+                        "direccion_$instalacionId" => 'required',
+                        "tlfno_$instalacionId" => 'nullable',
+                        "html_normas_$instalacionId" => 'nullable',
+                        "servicios_$instalacionId" => 'nullable',
+                        "slug_$instalacionId" => 'required',
+                        "politica_$instalacionId" => 'nullable',
+                        "condiciones_$instalacionId" => 'nullable',
+                        "horario_$instalacionId" => 'array',
+                    ], [
+                        "nombre_$instalacionId.required" => 'El campo nombre es obligatorio.',
+                        "direccion_$instalacionId.required" => 'El campo dirección es obligatorio.',
+                        "slug_$instalacionId.required" => 'El campo slug es obligatorio.',
+                        "horario_$instalacionId.array" => 'El campo horario debe ser un array.',
                     ]);
+    
+                    $secondaryConnection
+                        ->table('instalaciones')
+                        ->where('id', $instalacionId)
+                        ->update([
+                            'nombre' => $value,
+                            'direccion' => $request->input("direccion_$instalacionId"),
+                            'tlfno' => $request->input("tlfno_$instalacionId"),
+                            'html_normas' => $request->input("html_normas_$instalacionId"),
+                            'servicios' => serialize($request->input("servicios_$instalacionId")), // Serializar los servicios seleccionados
+                            'horario' => serialize($request->input("horario_$instalacionId")), // Serializar el horario
+                            'slug' => $request->input("slug_$instalacionId"),
+                            'politica' => $request->input("politica_$instalacionId"),
+                            'condiciones' => $request->input("condiciones_$instalacionId"),
+                        ]);
+                }
             }
         }
     

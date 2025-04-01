@@ -93,8 +93,9 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="url" class="form-label">Ruta</label>
-                        <input type="text" class="form-control" id="url" name="url"
-                            value="{{ old('url', $ayuntamiento->url) }}" placeholder="URL del ayuntamiento">
+                        <input type="text" class="form-control" id="url" name="url_visible"
+                            value="{{ old('url', $ayuntamiento->url) }}" placeholder="URL del ayuntamiento" disabled>
+                        <input type="hidden" name="url" value="{{ old('url', $ayuntamiento->url) }}">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="bd_nombre" class="form-label">Nombre de la base de datos</label>
@@ -152,6 +153,21 @@
                                         value="{{ old('tlfno_' . $instalacion->id, $instalacion->tlfno) }}"
                                         placeholder="Teléfono">
                                     @error('tlfno_' . $instalacion->id)
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Campo: Slug -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="slug_{{ $instalacion->id }}" class="form-label">Slug</label>
+                                    <input type="text"
+                                        class="form-control @error('slug_' . $instalacion->id) is-invalid @enderror"
+                                        name="slug_{{ $instalacion->id }}" id="slug_{{ $instalacion->id }}"
+                                        value="{{ old('slug_' . $instalacion->id, $instalacion->slug) }}"
+                                        placeholder="Slug">
+                                    @error('slug_' . $instalacion->id)
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -241,13 +257,13 @@
                                                         @foreach ($data['intervalo'] as $index => $intervalo)
                                                             <tr>
                                                                 <td>
-                                                                    <input type="text" class="form-control"
+                                                                    <input type="time" class="form-control"
                                                                         name="horario_{{ $instalacion->id }}[{{ $dia }}][intervalo][{{ $index }}][hinicio]"
                                                                         value="{{ $intervalo['hinicio'] }}"
                                                                         placeholder="Hora Inicio">
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control"
+                                                                    <input type="time" class="form-control"
                                                                         name="horario_{{ $instalacion->id }}[{{ $dia }}][intervalo][{{ $index }}][hfin]"
                                                                         value="{{ $intervalo['hfin'] }}"
                                                                         placeholder="Hora Fin">
@@ -259,21 +275,6 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                </div>
-
-                                <!-- Campo: Slug -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="slug_{{ $instalacion->id }}" class="form-label">Slug</label>
-                                    <input type="text"
-                                        class="form-control @error('slug_' . $instalacion->id) is-invalid @enderror"
-                                        name="slug_{{ $instalacion->id }}" id="slug_{{ $instalacion->id }}"
-                                        value="{{ old('slug_' . $instalacion->id, $instalacion->slug) }}"
-                                        placeholder="Slug">
-                                    @error('slug_' . $instalacion->id)
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
                                 </div>
 
                                 <!-- Campo: Política -->
@@ -458,6 +459,13 @@
                                 @enderror
                             </div>
 
+                            <!-- Campo: Slug -->
+                            <div class="col-md-6 mb-3">
+                                <label for="slug" class="form-label">Slug</label>
+                                <input type="text" class="form-control" id="slug" name="slug"
+                                    value="{{ old('slug') }}" placeholder="Slug">
+                            </div>
+
                             <!-- Campo: HTML Normas -->
                             <div class="col-md-6 mb-3">
                                 <label for="html_normas" class="form-label">HTML Normas</label>
@@ -553,13 +561,6 @@
                                         </div>
                                     @endforeach
                                 </div>
-                            </div>
-
-                            <!-- Campo: Slug -->
-                            <div class="col-md-6 mb-3">
-                                <label for="slug" class="form-label">Slug</label>
-                                <input type="text" class="form-control" id="slug" name="slug"
-                                    value="{{ old('slug') }}" placeholder="Slug">
                             </div>
 
                             <!-- Campo: Política -->

@@ -757,7 +757,11 @@
                                     <div>{{ $index }}</div>
                                     <div>
                                         @foreach ($horario['intervalo'] as $item)
+                                        @if($item['hinicio'] == null and $item['hfin'] == null)
+                                            Cerrado <br>
+                                        @else
                                             {{ $item['hinicio'] }} - {{ $item['hfin'] }}<br>
+                                        @endif
                                         @endforeach
                                     </div>
                                 </li>
@@ -804,9 +808,14 @@
                     Servicios</div>
                 <div class="card-body" style="padding: 12px">
                     <ul class="list-tags">
+                        @if (unserialize($instalacion->servicios) == null)
+                            <li>No hay servicios disponibles</li>
+
+                        @else
                         @foreach (unserialize($instalacion->servicios) as $item)
                             <li><img src="/img/servicios/{{ $item }}.png" width="12" height="12" class="mr-2"> {{ \App\Models\Servicios_adicionales::find($item)->nombre }}</li>
                         @endforeach
+                        @endif
                     </ul>
                 </div>
             </div>
