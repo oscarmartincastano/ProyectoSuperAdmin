@@ -23,7 +23,7 @@ class CheckInstalacion
         }
 
         // Si el usuario está autenticado y está intentando cambiar de instalación
-        if (Auth::check() && (!isset($_SESSION['bd']) || $_SESSION['bd'] != $slug)) {
+        if (Auth::check()) {
             return redirect()->back()->with('mensaje', 'Está intentando cambiar de instalación deportiva, por favor cierre sesión antes. Gracias!');
         }
 
