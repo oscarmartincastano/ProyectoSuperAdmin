@@ -259,110 +259,27 @@
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Opciones de visualización</label>
 
-                                <!-- Botones de radio para Normas -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Normas</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_normas_{{ $instalacion->id }}"
-                                            id="ver_normas_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_normas_' . $instalacion->id, $instalacion->ver_normas) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_normas_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_normas_{{ $instalacion->id }}"
-                                            id="ver_normas_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_normas_' . $instalacion->id, $instalacion->ver_normas) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_normas_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Servicios -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Servicios</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_servicios_{{ $instalacion->id }}"
-                                            id="ver_servicios_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_servicios_' . $instalacion->id, $instalacion->ver_servicios) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_servicios_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_servicios_{{ $instalacion->id }}"
-                                            id="ver_servicios_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_servicios_' . $instalacion->id, $instalacion->ver_servicios) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_servicios_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Horario -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Horario</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_horario_{{ $instalacion->id }}"
-                                            id="ver_horario_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_horario_' . $instalacion->id, $instalacion->ver_horario) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_horario_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_horario_{{ $instalacion->id }}"
-                                            id="ver_horario_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_horario_' . $instalacion->id, $instalacion->ver_horario) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_horario_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Política -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Política</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_politica_{{ $instalacion->id }}"
-                                            id="ver_politica_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_politica_' . $instalacion->id, $instalacion->ver_politica) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_politica_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_politica_{{ $instalacion->id }}"
-                                            id="ver_politica_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_politica_' . $instalacion->id, $instalacion->ver_politica) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_politica_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
-
-                                <!-- Botones de radio para Condiciones -->
-                                <div class="mb-2">
-                                    <label class="form-label">Mostrar Condiciones</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_condiciones_{{ $instalacion->id }}"
-                                            id="ver_condiciones_si_{{ $instalacion->id }}" value="1"
-                                            {{ old('ver_condiciones_' . $instalacion->id, $instalacion->ver_condiciones) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_condiciones_si_{{ $instalacion->id }}">Sí</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="ver_condiciones_{{ $instalacion->id }}"
-                                            id="ver_condiciones_no_{{ $instalacion->id }}" value="0"
-                                            {{ old('ver_condiciones_' . $instalacion->id, $instalacion->ver_condiciones) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label"
-                                            for="ver_condiciones_no_{{ $instalacion->id }}">No</label>
-                                    </div>
-                                </div>
+                                @foreach ($aDatos['instalaciones_visualizacion'] as $instalacion)
+                                    @foreach ($instalacion as $key => $value)
+                                        @if (Str::startsWith($key, 'ver_'))
+                                            <div class="mb-2">
+                                                <label class="form-label">{{ ucfirst(str_replace('_', ' ', str_replace('ver_', '', $key))) }}</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="{{ $key }}_{{ $instalacion['id'] }}"
+                                                        id="{{ $key }}_si_{{ $instalacion['id'] }}" value="1"
+                                                        {{ old($key . '_' . $instalacion['id'], $value) == 1 ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="{{ $key }}_si_{{ $instalacion['id'] }}">Sí</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="{{ $key }}_{{ $instalacion['id'] }}"
+                                                        id="{{ $key }}_no_{{ $instalacion['id'] }}" value="0"
+                                                        {{ old($key . '_' . $instalacion['id'], $value) == 0 ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="{{ $key }}_no_{{ $instalacion['id'] }}">No</label>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                @endforeach
                             </div>
                         </div>
                     </div>

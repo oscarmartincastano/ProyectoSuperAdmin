@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class SuperAdminController extends Controller
 {
@@ -53,6 +54,9 @@ class SuperAdminController extends Controller
     
         // Obtener las instalaciones y deserializar los campos
         $aDatos = [];
+        $aDatos['instalaciones_visualizacion'] = collect($secondaryConnection->table('instalaciones')->get())->map(function ($item) {
+            return (array) $item;
+        });
         $aDatos['instalaciones'] = $secondaryConnection->table('instalaciones')->get();
         foreach ($aDatos['instalaciones'] as $instalacion) {
             $instalacion->horario = @unserialize($instalacion->horario) ?: [];
@@ -160,12 +164,26 @@ class SuperAdminController extends Controller
                             'slug' => $request->input("slug_$instalacionId"),
                             'politica' => $request->input("politica_$instalacionId"),
                             'condiciones' => $request->input("condiciones_$instalacionId"),
-                            "ver_normas" => $request->input("ver_normas_$instalacionId"),
-                            "ver_servicios" => $request->input("ver_servicios_$instalacionId"),
-                            "ver_horario" => $request->input("ver_horario_$instalacionId"),
-                            "ver_politica" => $request->input("ver_politica_$instalacionId"),
-                            "ver_condiciones" => $request->input("ver_condiciones_$instalacionId"),
                         ]);
+
+                        foreach ($request->all() as $key => $value) {
+                            // Verificar si la clave comienza con "ver_" y no es "ver_sponsor"
+                            if (Str::startsWith($key, 'ver_') && $key !== 'ver_sponsor') {
+                                // Extraer el nombre de la columna y el ID de la instalación desde la clave
+                                if (preg_match('/^(ver_.*)_(\d+)$/', $key, $matches)) {
+                                    $columnName = $matches[1]; // Nombre de la columna (por ejemplo, "ver_normas")
+                                    $instalacionId = $matches[2]; // ID de la instalación (por ejemplo, "3")
+                        
+                                    // Actualizar el campo en la base de datos
+                                    $secondaryConnection
+                                        ->table('instalaciones')
+                                        ->where('id', $instalacionId)
+                                        ->update([
+                                            $columnName => $value, // Actualizar el campo dinámicamente
+                                        ]);
+                                }
+                            }
+                        }
                 }
             }
         }
