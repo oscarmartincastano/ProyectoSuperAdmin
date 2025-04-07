@@ -85,6 +85,20 @@ return [
         'strict' => true,
         'engine' => null,
     ],
+    'app_reservas' => [
+        'driver' => env('DB_RESERVAS_CONNECTION', 'mysql'),
+        'host' => env('DB_RESERVAS_HOST', '127.0.0.1'),
+        'port' => env('DB_RESERVAS_PORT', '3306'),
+        'database' => env('DB_RESERVAS_DATABASE', 'forge'),
+        'username' => env('DB_RESERVAS_USERNAME', 'forge'),
+        'password' => env('DB_RESERVAS_PASSWORD', ''),
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'strict' => true,
+        'engine' => null,
+    ],
+
 
         'pgsql' => [
             'driver' => 'pgsql',

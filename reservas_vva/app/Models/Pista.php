@@ -37,7 +37,7 @@ class Pista extends Model
 
     public function instalacion()
     {
-        return $this->hasOne(Instalacion::class, 'id', 'id_instalacion');
+        return $this->belongsTo(Instalacion::class, 'id_instalacion', 'id');
     }
 
     public function reservas()
@@ -591,44 +591,32 @@ class Pista extends Model
 
 
     public function get_intervalo_given_timestamp($timestamp)
-    {
-        $fecha = new \DateTime(date('Y-m-d H:i', $timestamp));
+{
+    $fecha = new \DateTime(date('Y-m-d H:i', $timestamp));
 
-        foreach ($this->horario_deserialized as $key => $item) {
-            if (in_array($fecha->format('w'), $item['dias']) || ($fecha->format('w') == 0 && in_array(7, $item['dias']))) {
-                foreach ($item['intervalo'] as $index => $intervalo) {
+    foreach ($this->horario_deserialized as $key => $item) {
+        if (in_array($fecha->format('w'), $item['dias']) || ($fecha->format('w') == 0 && in_array(7, $item['dias']))) {
+            foreach ($item['intervalo'] as $index => $intervalo) {
+                $valor = ($intervalo['hfin'] == "00:00") ?
+                    (new \DateTime($intervalo['hfin']))->modify('+1 day')->getTimestamp() :
+                    strtotime($intervalo['hfin']);
 
-                    if($intervalo['hfin']=="00:00"){
-
-                        $a = new \DateTime($intervalo['hfin']);
-
-                        $a->modify('+1 day');
-
-                        $valor= ($a->getTimestamp());
-
-
-
-                    }else{
-                        $valor= strtotime($intervalo['hfin']);
-                    }
-
-                    if (strtotime(date('H:i', $timestamp)) >= strtotime($intervalo['hinicio']) && strtotime(date('H:i', $timestamp)) < $valor) {
-
-                        $interval = $intervalo;
-                        $interval['tipopextra'] = $timestamp > strtotime('2022-08-22') ? $intervalo['tipopextra'] : 'fijo';
-                        $interval['pextra'] = $timestamp > strtotime('2022-08-22') ? $interval['pextra'] : 0;
-                        return $interval;
-                    }
+                if (strtotime(date('H:i', $timestamp)) >= strtotime($intervalo['hinicio']) && strtotime(date('H:i', $timestamp)) < $valor) {
+                    $interval = $intervalo;
+                    $interval['tipopextra'] = $timestamp > strtotime('2022-08-22') ? ($intervalo['tipopextra'] ?? 'fijo') : 'fijo';
+                    $interval['pextra'] = $timestamp > strtotime('2022-08-22') ? ($intervalo['pextra'] ?? 0) : 0;
+                    return $interval;
                 }
             }
         }
     }
 
+    return null; // Devuelve null si no se encuentra un intervalo
+}
+
     public function get_precio_total_given_timestamp($timestamp, $extra_opciones = 0)
     {
         $intervalo = $this->get_intervalo_given_timestamp($timestamp);
-
-
         $extra = $intervalo['pextra'];
 
         return !isset($intervalo['tipopextra']) || $intervalo['tipopextra'] == 'fijo' ?

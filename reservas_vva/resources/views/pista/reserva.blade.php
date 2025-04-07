@@ -61,50 +61,61 @@
             color: rgb(52, 70, 147);
         }
 
-        .navbar-end .navbar-item{
+        .navbar-end .navbar-item {
             font-weight: bold;
             color: #4a4a4a;
             padding: 0.5rem 0.75rem;
         }
-        .navbar-end .navbar-item.active{
+
+        .navbar-end .navbar-item.active {
             color: #3273dc;
         }
-        .navbar-end .navbar-item:hover{
+
+        .navbar-end .navbar-item:hover {
             color: #3273dc;
             text-decoration: none;
         }
-        .navbar{
+
+        .navbar {
             background: white;
         }
-        .card-body{
+
+        .card-body {
             padding: 1.75rem;
         }
+
         .navbar>.container {
             align-items: center;
             display: flex;
             min-height: 3.25rem;
             width: 100%;
         }
-        .navbar-brand{
+
+        .navbar-brand {
             align-items: center;
             padding: 10px;
             display: flex;
             flex-shrink: 0;
             min-height: 3.25rem;
         }
-        .navbar-brand>.navbar-item{
+
+        .navbar-brand>.navbar-item {
             padding: 10px;
             cursor: pointer;
         }
+
         .navbar-burger span:nth-child(1) {
             top: calc(50% - 9px);
         }
+
         .navbar-burger span:nth-child(2) {
             top: calc(50% - -1px);
         }
+
         .navbar-burger span:nth-child(3) {
             top: calc(50% - 4px);
         }
+
         .navbar-burger span {
             background-color: currentColor;
             display: block;
@@ -113,11 +124,12 @@
             position: absolute;
             transform-origin: center;
             transition-duration: 86ms;
-            transition-property: background-color,opacity,transform;
+            transition-property: background-color, opacity, transform;
             transition-timing-function: ease-out;
             width: 16px;
             top: calc(50% - 1px);
         }
+
         .navbar-burger {
             color: #4a4a4a;
             cursor: pointer;
@@ -127,84 +139,106 @@
             width: 3.25rem;
             margin-left: auto;
         }
-        .navbar-burger{
+
+        .navbar-burger {
             display: none;
         }
+
         @media (max-width: 1200px) {
-            .navbar>.container{
+            .navbar>.container {
                 display: block;
             }
+
             a.navbar-item {
                 padding: 0;
             }
-            a.navbar-item>img{
+
+            a.navbar-item>img {
                 max-height: 32px !important;
             }
-            .navbar-burger{
+
+            .navbar-burger {
                 display: block;
             }
         }
-        input.form-control{
+
+        input.form-control {
             height: calc(1em + 0.75rem + 2px)
         }
+
         .navbar {
             z-index: 2;
         }
-        .navbar-end{
+
+        .navbar-end {
             display: block;
         }
+
         @media (max-width: 600px) {
             a.navbar-item {
                 padding: 0;
             }
-            a.navbar-item>img{
+
+            a.navbar-item>img {
                 max-height: 32px !important;
             }
+
             body>nav.navbar {
                 position: fixed;
                 top: 0;
                 width: 100%;
             }
-            body>main{
+
+            body>main {
                 margin-top: 73px;
             }
+
             h1.titulo-pagina {
                 margin-top: 103px !important;
             }
         }
+
         @media (max-width: 1025px) {
-            .navbar-menu{
+            .navbar-menu {
                 display: none;
             }
-            .navbar-end>a.navbar-item{
+
+            .navbar-end>a.navbar-item {
                 padding: 13px;
             }
+
             body>nav.navbar {
                 display: block;
                 padding: 0;
             }
-            nav.navbar .navbar-brand{
+
+            nav.navbar .navbar-brand {
                 justify-content: space-between;
                 width: 100%;
             }
+
             .navbar-end>a:first-child {
                 border-top: 1px solid #ccc;
             }
+
             .navbar-menu.is-active {
                 display: block;
             }
-            .navbar-item{
+
+            .navbar-item {
                 display: block
             }
         }
+
         @media (min-width: 1025px) {
-            .contenedor-navbar{
+            .contenedor-navbar {
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
             }
         }
+
         @media (max-width: 1000px) {
             .card-col-reserva {
                 flex: 0 0 100%;
@@ -214,7 +248,8 @@
     </style>
 </head>
 
-<body style="background:linear-gradient(0deg, rgba(36, 36, 36, 0.5), rgba(36, 36, 36, 0.5))@if (file_exists(public_path() . '/img/deportes/reserva-'. lcfirst($pista->tipo) .'.jpg')), url(/img/deportes/reserva-{{ lcfirst($pista->tipo) }}.jpg) @endif;
+<body
+    style="background:linear-gradient(0deg, rgba(36, 36, 36, 0.5), rgba(36, 36, 36, 0.5))@if (file_exists(public_path() . '/img/deportes/reserva-' . lcfirst($pista->tipo) . '.jpg')) , url(/img/deportes/reserva-{{ lcfirst($pista->tipo) }}.jpg) @endif;
     background-size:cover;background-position:bottom">
 
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -223,7 +258,7 @@
                 <a class="navbar-item" href="/{{ request()->slug_instalacion }}" style="padding: 10px">
 
                     @if (file_exists(public_path() . '/img/ceco.png'))
-                        <img src="{{ asset('img/'.request()->slug_instalacion.'.png') }}" style="max-height: 50px" />
+                        <img src="{{ asset('img/' . request()->slug_instalacion . '.png') }}" style="max-height: 50px" />
                     @else
                         <img src="/img/tallerempresarial.png" style="max-height: 50px" />
                     @endif
@@ -239,24 +274,34 @@
 
             <div id="navbarBasicExample" class="navbar-menu">
                 <div class="navbar-end">
-                    <a href="/{{ request()->slug_instalacion }}" class="navbar-item {{request()->is('/') ? 'active' : '' }}"> Inicio </a>
+                    <a href="/{{ request()->slug_instalacion }}"
+                        class="navbar-item {{ request()->is('/') ? 'active' : '' }}"> Inicio </a>
                     {{-- <a href="" class="navbar-item"> Reservar </a> --}}
                     {{-- <a href="#" class="navbar-item"> Normas </a> --}}
                     @if (\Auth::check())
                         @if (auth()->user()->rol != 'admin')
-                            <a href="/{{ request()->slug_instalacion }}/mis-reservas" class="navbar-item {{request()->is(request()->slug_instalacion . '/mis-reservas') ? 'active' : '' }}"><i class="fas fa-book-open mr-2"></i> Mis reservas </a>
-                            <a href="/{{ request()->slug_instalacion }}/perfil" class="navbar-item"><i class="fas fa-user mr-2"></i> Mi perfil </a>
+                            <a href="/{{ request()->slug_instalacion }}/mis-reservas"
+                                class="navbar-item {{ request()->is(request()->slug_instalacion . '/mis-reservas') ? 'active' : '' }}"><i
+                                    class="fas fa-book-open mr-2"></i> Mis reservas </a>
+                            <a href="/{{ request()->slug_instalacion }}/perfil" class="navbar-item"><i
+                                    class="fas fa-user mr-2"></i> Mi perfil </a>
                         @else
-                            <a href="/{{ request()->slug_instalacion }}/perfil" class="navbar-item"><i class="fas fa-unlock-alt mr-2"></i> Administración </a>
+                            <a href="/{{ request()->slug_instalacion }}/perfil" class="navbar-item"><i
+                                    class="fas fa-unlock-alt mr-2"></i> Administración </a>
                         @endif
-                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="navbar-item">
-                            <form id="logout-form" action="{{ route('logout', ['slug_instalacion' => request()->slug_instalacion]) }}" method="POST" style="display: none;">
+                        <a href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                            class="navbar-item">
+                            <form id="logout-form"
+                                action="{{ route('logout', ['slug_instalacion' => request()->slug_instalacion]) }}"
+                                method="POST" style="display: none;">
                                 @csrf
                             </form>
                             <i class="fas fa-power-off mr-2"></i> Cerrar sesión
                         </a>
                     @else
-                        <a href="{{ route('login_instalacion', ['slug_instalacion' => request()->slug_instalacion]) }}" class="navbar-item"><i class="fas fa-sign-in-alt mr-2"></i> Acceder</a>
+                        <a href="{{ route('login_instalacion', ['slug_instalacion' => request()->slug_instalacion]) }}"
+                            class="navbar-item"><i class="fas fa-sign-in-alt mr-2"></i> Acceder</a>
 
                     @endif
                 </div>
@@ -265,7 +310,8 @@
     </nav>
     <div id="app">
         <section class="hero is-medium">
-            <div class="has-text-centered title-div title-reserva-section" style="padding-top:4.5rem;padding-bottom:3.5rem;margin-bottom:0">
+            <div class="has-text-centered title-div title-reserva-section"
+                style="padding-top:4.5rem;padding-bottom:3.5rem;margin-bottom:0">
                 <h1 class="title text-center mb-0">{{ $pista->nombre }}</h1>
             </div>
         </section>
@@ -289,12 +335,13 @@
                                     Estás reservando para <em>{{ $pista->nombre }}</em>. Por favor, revise y confirme
                                     los datos siguientes.
                                 </p>
-                                @if(session()->has('error_reservas_maximas'))
+                                @if (session()->has('error_reservas_maximas'))
                                     <p class="descripcion" style="color: red">
-                                        No se ha podido realizar la reserva porque el número de reservas sobrepasa al número máximo reservas permitido.
+                                        No se ha podido realizar la reserva porque el número de reservas sobrepasa al
+                                        número máximo reservas permitido.
                                     </p>
                                 @endif
-                                @if(session()->has('error'))
+                                @if (session()->has('error'))
                                     <p class="descripcion" style="color: red">
                                         {{ session()->get('error') }}
                                     </p>
@@ -319,42 +366,54 @@
                                         <label class="col-sm-3 col-form-label py-0">Fecha:</label>
                                         <div class="col-sm-9">
                                             <div>{{ date('d/m/Y', $fecha) }} (<span
-                                                class="horario">{{ \Carbon\Carbon::createFromTimestamp($fecha)->format('H:i') }} a <span
-                                                class="hfin">{{ \Carbon\Carbon::createFromTimestamp($fecha)->addMinutes($secuencia)->format('H:i') == '23:59' ? '02:30' : \Carbon\Carbon::createFromTimestamp($fecha)->addMinutes($secuencia)->format('H:i')}}</span></span>)
+                                                    class="horario">{{ \Carbon\Carbon::createFromTimestamp($fecha)->format('H:i') }}
+                                                    a <span
+                                                        class="hfin">{{ \Carbon\Carbon::createFromTimestamp($fecha)->addMinutes($secuencia)->format('H:i') == '23:59' ? '02:30' : \Carbon\Carbon::createFromTimestamp($fecha)->addMinutes($secuencia)->format('H:i') }}</span></span>)
                                             </div>
                                         </div>
                                     </div>
                                     @php
                                         $hinicio = \Carbon\Carbon::createFromTimestamp($fecha)->format('H:i');
-                                        $hfin = \Carbon\Carbon::createFromTimestamp($fecha)->addMinutes($secuencia)->format('H:i');
+                                        $hfin = \Carbon\Carbon::createFromTimestamp($fecha)
+                                            ->addMinutes($secuencia)
+                                            ->format('H:i');
                                     @endphp
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label py-0">@if($pista->id == 10 && $instalacion->tipo_reservas_id != 2)Piscina: @else Tarifa: @endif</label>
-                                        <input type="hidden" id="pruebacheck" value="{{check_cookie()}}">
+                                        <label class="col-sm-3 col-form-label py-0">
+                                            @if ($pista->id == 10 && $instalacion->tipo_reservas_id != 2)
+                                                Piscina:
+                                            @else
+                                                Tarifa:
+                                            @endif
+                                        </label>
+                                        <input type="hidden" id="pruebacheck" value="{{ check_cookie() }}">
                                         <div class="col-sm-9">
                                             <select class="form-control" name="tarifa" id="tarifa">
                                                 @if ($pista->allow_more_res)
-                                                    @for ($i = 1; $i < $number+1; $i++)
-
-                                                    <option
-                                                        data-hfin="{{ date('H:i', strtotime(date('H:i', $fecha) . ' +' . $secuencia * $i . ' minutes')) }}"
-                                                        value="{{ $i }}">
-                                                                    Reserva {{floor(($secuencia*$i)/60) ? floor(($secuencia*$i)/60) . ' HORAS' : ''  }} {{(($secuencia*$i)%60) ? (($secuencia*$i)%60)  . ' MINUTOS' : '' }} {{-- (Precio: {{ $pista->get_precio_total_given_timestamp(request()->timestamp) }} €) --}}</option>
-                                                            </option>
-                                                        @if(request()->slug_instalacion == 'villafranca-de-cordoba' && $i==2)
+                                                    @for ($i = 1; $i < $number + 1; $i++)
+                                                        <option
+                                                            data-hfin="{{ date('H:i', strtotime(date('H:i', $fecha) . ' +' . $secuencia * $i . ' minutes')) }}"
+                                                            value="{{ $i }}">
+                                                            Reserva
+                                                            {{ floor(($secuencia * $i) / 60) ? floor(($secuencia * $i) / 60) . ' HORAS' : '' }}
+                                                            {{ ($secuencia * $i) % 60 ? ($secuencia * $i) % 60 . ' MINUTOS' : '' }}
+                                                            {{-- (Precio: {{ $pista->get_precio_total_given_timestamp(request()->timestamp) }} €) --}}</option>
+                                                        </option>
+                                                        @if (request()->slug_instalacion == 'villafranca-de-cordoba' && $i == 2)
                                                             @break
                                                         @endif
-                                                        @endfor
+                                                    @endfor
                                                 @else
                                                     <option
-                                                        data-hfin="{{ date('H:i', strtotime(date('H:i', $fecha) . ' +' . $secuencia  . ' minutes')) }}"
+                                                        data-hfin="{{ date('H:i', strtotime(date('H:i', $fecha) . ' +' . $secuencia . ' minutes')) }}"
                                                         value="1">
-                                                            @if($pista->id == 10)
+                                                        @if ($pista->id == 10)
                                                             Reserva Piscina
-                                                            @else
-                                                            {{floor(($secuencia)/60) ? floor(($secuencia)/60) . ' HORAS' : ''  }} {{(($secuencia)%60) ? (($secuencia)%60)  . ' MINUTOS' : '' }}
-                                                            @endif
-                                                        </option>
+                                                        @else
+                                                            {{ floor($secuencia / 60) ? floor($secuencia / 60) . ' HORAS' : '' }}
+                                                            {{ $secuencia % 60 ? $secuencia % 60 . ' MINUTOS' : '' }}
+                                                        @endif
+                                                    </option>
                                                 @endif
                                             </select>
                                         </div>
@@ -367,7 +426,7 @@
                                             </div>
                                         </div>
                                     @endif --}}
-                                    @if (auth()->user()->instalacion->configuracion->observaciones)
+                                    @if ($pista->instalacion && $pista->instalacion->configuracion && $pista->instalacion->configuracion->observaciones)
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label py-0">Observaciones:</label>
                                             <div class="col-sm-9">
@@ -376,42 +435,53 @@
                                         </div>
                                     @endif
                                     @foreach ($pista->all_campos_personalizados as $item)
-                                        @if($pista->id == 10 && $item->tipo == 'select')
-                                            @foreach (unserialize($item->opciones) as $option)
-                                                <div class="form-group row mb-2">
-                                                    <label class="col-sm-3 col-form-label py-0">{{ $option['texto'] }}:</label>
-                                                    <div class="col-sm-9">
-                                                        <select data-value="{{ $option['texto'] }}" data-precio_extra_opcion={{ $option['pextra'] }} class="form-control" name="campo_adicional[{{ $item->id }}][{{ $option['texto'] }}]">
-                                                           @for ($i = 0; $i <= 10; $i++)
-                                                               <option value={{ $i }}>{{ $i }} {{-- {{ $i ? 'personas' : '' }} --}}</option>
-                                                           @endfor
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                        @if ($pista->id == 10 && $item->tipo == 'select')
+                                        @foreach (unserialize($item->opciones) as $option)
+                                        <div class="form-group row mb-2">
+                                            <label class="col-sm-3 col-form-label py-0">{{ $option['texto'] }}:</label>
+                                            <div class="col-sm-9">
+                                                <select data-value="{{ $option['texto'] }}"
+                                                    data-precio_extra_opcion="{{ isset($option['pextra']) ? $option['pextra'] : 0 }}"
+                                                    class="form-control"
+                                                    name="campo_adicional[{{ $item->id }}][{{ $option['texto'] }}]">
+                                                    @for ($i = 0; $i <= 10; $i++)
+                                                        <option value="{{ $i }}">{{ $i }}</option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                         @else
                                             <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label py-0">{{ $item->label }}:</label>
+                                                <label
+                                                    class="col-sm-3 col-form-label py-0">{{ $item->label }}:</label>
                                                 <div class="col-sm-9">
                                                     @if ($item->tipo == 'textarea')
-                                                        <textarea class="form-control" name="campo_adicional[{{ $item->id }}]" rows="3" {{ $item->required ? 'required' : '' }}></textarea>
+                                                        <textarea class="form-control" name="campo_adicional[{{ $item->id }}]" rows="3"
+                                                            {{ $item->required ? 'required' : '' }}></textarea>
                                                     @elseif($item->tipo == 'select')
-                                                        <select class="form-control select_adicional" name="campo_adicional[{{ $item->id }}]">
+                                                        <select class="form-control select_adicional"
+                                                            name="campo_adicional[{{ $item->id }}]">
                                                             @foreach (unserialize($item->opciones) as $option)
-
-                                                                <option data-value="{{ $option['texto'] }}" data-precio_extra_opcion={{ $option['pextra'] }} value="{{ $option['texto'] }}">{{ $option['texto'] }}</option>
+                                                                <option data-value="{{ $option['texto'] }}"
+                                                                    data-precio_extra_opcion={{ $option['pextra'] }}
+                                                                    value="{{ $option['texto'] }}">
+                                                                    {{ $option['texto'] }}</option>
                                                             @endforeach
                                                         </select>
                                                     @else
-                                                        <input type="{{ $item->tipo }}" name="campo_adicional[{{ $item->id }}]" class="form-control" placeholder="{{ $item->label }}" {{ $item->required ? 'required' : '' }}>
+                                                        <input type="{{ $item->tipo }}"
+                                                            name="campo_adicional[{{ $item->id }}]"
+                                                            class="form-control" placeholder="{{ $item->label }}"
+                                                            {{ $item->required ? 'required' : '' }}>
                                                     @endif
                                                 </div>
                                             </div>
                                         @endif
                                     @endforeach
                                     {{-- {{ dd($pista->get_precio_total_given_timestamp(request()->timestamp)) }} --}}
-                                    @if(request()->slug_instalacion == "la-guijarrosa" || request()->slug_instalacion == "santaella")
-                                            @if(isset($bono_usuario))
+                                    @if (request()->slug_instalacion == 'la-guijarrosa' || request()->slug_instalacion == 'santaella')
+                                        @if (isset($bono_usuario))
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label py-0">Precio:</label>
                                                 <div class="col-sm-9">
@@ -422,18 +492,23 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label py-0">Precio:</label>
                                                 <div class="col-sm-9">
-                                                    <div id="precio_total" data-precio_multip="{{ isset($intervalo['tipopextra']) && $intervalo['tipopextra'] != 'fijo' ? $intervalo['pextra'] : '' }}" data-precio_base="{{ $pista->get_precio_total_given_timestamp(request()->timestamp) }}">
+                                                    <div id="precio_total"
+                                                        data-precio_multip="{{ isset($intervalo['tipopextra']) && $intervalo['tipopextra'] != 'fijo' ? $intervalo['pextra'] : '' }}"
+                                                        data-precio_base="{{ $pista->get_precio_total_given_timestamp(request()->timestamp) }}">
                                                         <span></span> €
                                                     </div>
                                                 </div>
                                             </div>
                                         @endif
                                     @else
-                                        @if($pista->id != 10)
+                                        @if ($pista->id != 10)
                                             <div class="form-group row">
                                                 <label class="col-sm-3 col-form-label py-0">Precio:</label>
                                                 <div class="col-sm-9">
-                                                    <div id="precio_total" data-precio_multip="{{ isset($intervalo['tipopextra']) && $intervalo['tipopextra'] != 'fijo' ? $intervalo['pextra'] : '' }}" data-precio_base={{ $pista->get_precio_total_given_timestamp(request()->timestamp) }}><span></span> €</div>
+                                                    <div id="precio_total"
+                                                        data-precio_multip="{{ isset($intervalo['tipopextra']) && $intervalo['tipopextra'] != 'fijo' ? $intervalo['pextra'] : '' }}"
+                                                        data-precio_base={{ $pista->get_precio_total_given_timestamp(request()->timestamp) }}>
+                                                        <span></span> €</div>
                                                 </div>
                                             </div>
                                         @endif
@@ -442,8 +517,12 @@
                                         <label class="col-sm-3 col-form-label py-0"></label>
                                         <div class="col-sm-9">
                                             <div class="form-check">
-                                                <input required type="checkbox" class="form-check-input" id="terminos">
-                                                <label class="form-check-label" for="terminos">Acepto los <a target="_blank" href="/{{ request()->slug_instalacion }}/condiciones-generales">términos y condiciones de compra</a>.</label>
+                                                <input required type="checkbox" class="form-check-input"
+                                                    id="terminos">
+                                                <label class="form-check-label" for="terminos">Acepto los <a
+                                                        target="_blank"
+                                                        href="/{{ request()->slug_instalacion }}/condiciones-generales">términos
+                                                        y condiciones de compra</a>.</label>
                                             </div>
                                         </div>
                                     </div>
@@ -454,7 +533,8 @@
                                                 <i class="fas fa-check"></i>
                                                 <div>Reservar</div>
                                             </button>
-                                            <a href="/{{ request()->slug_instalacion }}/{{ request()->deporte }}/{{ request()->id_pista }}" class="cancel btn btn-danger">
+                                            <a href="/{{ request()->slug_instalacion }}/{{ request()->deporte }}/{{ request()->id_pista }}"
+                                                class="cancel btn btn-danger">
                                                 <i class="fas fa-times"></i>
                                                 <div>Cancelar</div>
                                             </a>
@@ -476,15 +556,16 @@
     <script>
         function checkIntervalo() {
             $.ajax({
-                type:"GET", // la variable type guarda el tipo de la peticion GET,POST,..
-                url:"/ajax/checkIntervalo", //url guarda la ruta hacia donde se hace la peticion
-                data : {
+                type: "GET", // la variable type guarda el tipo de la peticion GET,POST,..
+                url: "/ajax/checkIntervalo", //url guarda la ruta hacia donde se hace la peticion
+                data: {
                     id_usuario: $('#id_usuario').val(),
                     id_pista: $('#id_pista').val(),
                     timestamp: $('#timestamp').val()
                 },
-                success:function(result){ //success es una funcion que se utiliza si el servidor retorna informacion
-                    if(result) {
+                success: function(
+                result) { //success es una funcion que se utiliza si el servidor retorna informacion
+                    if (result) {
                         window.location.replace($('#url_redirect').val());
                     }
                 },
@@ -505,29 +586,30 @@
             });
 
 
-            $('.navbar-burger').click(function (e) {
+            $('.navbar-burger').click(function(e) {
                 $(this).toggleClass('is-active');
                 $(`#${$(this).data('target')}`).toggleClass('is-active');
             });
 
             let precio = $('#precio_total').data('precio_base');
-            $('.select_adicional').each(function (index, element) {
+            $('.select_adicional').each(function(index, element) {
                 precio += $(element).find('option:selected').data('precio_extra_opcion');
             });
-            let suma_porcentaje = (precio * $('#precio_total').data('precio_multip'))/100;
+            let suma_porcentaje = (precio * $('#precio_total').data('precio_multip')) / 100;
             precio += suma_porcentaje;
             $('#precio_total span').html(precio);
 
-            (function () {
+            (function() {
                 let precio_anterior;
-                $('.select_adicional').on('click', function () {
+                $('.select_adicional').on('click', function() {
                     // Store the current value on focus and on change
                     precio_anterior = $(this).find('option:selected').data('precio_extra_opcion');
-                }).change(function (e) {
+                }).change(function(e) {
                     console.log(precio_anterior);
 
-                    precio = precio - suma_porcentaje - precio_anterior + $(this).find('option:selected').data('precio_extra_opcion');
-                    suma_porcentaje = ((precio * $('#precio_total').data('precio_multip'))/100);
+                    precio = precio - suma_porcentaje - precio_anterior + $(this).find(
+                        'option:selected').data('precio_extra_opcion');
+                    suma_porcentaje = ((precio * $('#precio_total').data('precio_multip')) / 100);
 
                     precio += suma_porcentaje;
 

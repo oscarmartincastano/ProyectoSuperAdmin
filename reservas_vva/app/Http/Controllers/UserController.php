@@ -140,25 +140,12 @@ class UserController extends Controller
 
             }
 
-
-
-
-
-
-
-
-
-
         $servicios_contratados = Servicio_Usuario::where('id_usuario', $user->id)
         ->whereDate('fecha_expiracion', '>=', \Carbon\Carbon::now()->format('Y-m-d'))
         ->pluck('id_servicio')
         ->toArray();
 
-
-
         $servicios_no_contratados = array_intersect($servicios_disponibles,$servicios_contratados);
-
-
 
 
         if (!$pista->check_reserva_valida($request->timestamp)) {
@@ -217,7 +204,6 @@ class UserController extends Controller
             }
         }
         $intervalo = $pista->get_intervalo_given_timestamp($request->timestamp);
-
         if($bono_usuario){
             return view('pista.reserva', compact('pista', 'fecha', 'secuencia', 'number', 'intervalo', 'instalacion','bono_usuario'));
         }else{
@@ -308,23 +294,6 @@ class UserController extends Controller
         $reserva->observaciones="Pista cancelada por el usuario";
 
         Mail::to($reserva->user->email)->send(new CancelarReserva($reserva->user, $reserva));
-
-        \DB::purge('mysql');
-
-        $dynamic_db_name = 'manager_reservas';
-        $config = \Config::get('database.connections.mysql');
-
-        $config['database'] = $dynamic_db_name;
-        $config['password'] = "#3p720hqK";
-        config()->set('database.connections.mysql', $config);
-
-        $pedido_manager = New Pedido();
-        $pedido_manager->id = $pedido->id;
-        $pedido_manager->id_usuario = $pedido->id_usuario;
-        $pedido_manager->amount = $pedido->amount;
-        $pedido_manager->id_reserva = $pedido->id_reserva;
-        $pedido_manager->estado = $pedido->estado;
-        $pedido_manager->save();
 
         \DB::purge('mysql');
 

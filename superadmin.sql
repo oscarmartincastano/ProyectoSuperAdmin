@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-04-2025 a las 14:43:51
+-- Tiempo de generación: 07-04-2025 a las 09:49:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -168,6 +168,7 @@ CREATE TABLE `superadmin` (
   `name` varchar(256) NOT NULL,
   `url` varchar(256) NOT NULL,
   `bd_nombre` varchar(256) NOT NULL,
+  `ver_sponsor` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -176,9 +177,10 @@ CREATE TABLE `superadmin` (
 -- Volcado de datos para la tabla `superadmin`
 --
 
-INSERT INTO `superadmin` (`id`, `name`, `url`, `bd_nombre`, `created_at`, `updated_at`) VALUES
-(10, 'Villanueva de Cordoba', 'https://gestioninstalacion.es/vvadecordoba', 'reservas_vva', '2025-03-31 09:09:51', '2025-03-31 09:09:51'),
-(11, 'La guijarrosa', 'https://gestioninstalacion.es/la-guijarrosa', 'rese_guijarrosa', '2025-03-28 06:18:31', '2025-03-28 06:18:31');
+INSERT INTO `superadmin` (`id`, `name`, `url`, `bd_nombre`, `ver_sponsor`, `created_at`, `updated_at`) VALUES
+(10, 'Villanueva de Cordoba', 'https://gestioninstalacion.es/vvadecordoba', 'reservas_vva', 1, '2025-03-31 09:09:51', '2025-03-31 09:09:51'),
+(11, 'La guijarrosa', 'https://gestioninstalacion.es/la-guijarrosa', 'rese_guijarrosa', 1, '2025-03-28 06:18:31', '2025-03-28 06:18:31'),
+(26, 'Superate Sport', 'https://gestioninstalacion.es/superate', 'superate', 1, '2025-04-07 07:47:56', '2025-04-07 07:47:56');
 
 -- --------------------------------------------------------
 
@@ -300,7 +302,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT de la tabla `superadmin`
 --
 ALTER TABLE `superadmin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `users`

@@ -16,5 +16,6 @@ class SuperAdmin extends Model
         'name',
         'url',
         'bd_nombre',
+        'ver_sponsor',
     ];
 }

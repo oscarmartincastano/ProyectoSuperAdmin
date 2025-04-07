@@ -7,6 +7,16 @@
             window.location.href = "{{ route('superadmin.login') }}";
         </script>
     @endif
+    {{-- si hay cualuier error que lo muestre aqui --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     {{-- Formulario para editar un ayuntamiento --}}
     <form action="{{ route('superadmin.update', $ayuntamiento->id) }}" method="POST" class="bg-light p-4 rounded shadow-sm">
         @csrf
@@ -32,6 +42,22 @@
                     <input type="text" class="form-control" id="bd_nombre" name="bd_nombre"
                         value="{{ old('bd_nombre', $ayuntamiento->bd_nombre) }}" placeholder="Nombre de la base de datos">
                 </div>
+                @if ($ayuntamiento->name == "Superate Sport")
+                {{-- Radio button para seleccionar si ver los sponsor o no --}}
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mostrar Sponsors</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="ver_sponsor" id="ver_sponsor_si" value="1"
+                            {{ old('ver_sponsor', $ayuntamiento->ver_sponsor ?? 0) == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="ver_sponsor_si">Sí</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="ver_sponsor" id="ver_sponsor_no" value="0"
+                            {{ old('ver_sponsor', $ayuntamiento->ver_sponsor ?? 0) == 0 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="ver_sponsor_no">No</label>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
 

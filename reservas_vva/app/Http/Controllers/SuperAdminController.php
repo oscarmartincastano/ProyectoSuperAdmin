@@ -68,8 +68,9 @@ class SuperAdminController extends Controller
             'name' => 'required',
             'url' => 'required',
             'bd_nombre' => 'required',
+            'ver_sponsor' => 'required|boolean',
         ]);
-        
+
         // Obtener el ayuntamiento
         $ayuntamiento = SuperAdmin::find($id);
     
@@ -95,9 +96,9 @@ class SuperAdminController extends Controller
             'name' => $request->input('name'),
             'url' => $url,
             'bd_nombre' => $request->input('bd_nombre'),
+            'ver_sponsor' => $request->input('ver_sponsor'),
         ]);
 
-    
         // Configurar la conexión a la base de datos secundaria
         $bd_nombre = $request->input('bd_nombre');
         $secondaryDbConfig = [
@@ -159,6 +160,11 @@ class SuperAdminController extends Controller
                             'slug' => $request->input("slug_$instalacionId"),
                             'politica' => $request->input("politica_$instalacionId"),
                             'condiciones' => $request->input("condiciones_$instalacionId"),
+                            "ver_normas" => $request->input("ver_normas_$instalacionId"),
+                            "ver_servicios" => $request->input("ver_servicios_$instalacionId"),
+                            "ver_horario" => $request->input("ver_horario_$instalacionId"),
+                            "ver_politica" => $request->input("ver_politica_$instalacionId"),
+                            "ver_condiciones" => $request->input("ver_condiciones_$instalacionId"),
                         ]);
                 }
             }
