@@ -48,22 +48,15 @@ class SuperAdminController extends Controller
         config(['database.connections.secondary' => $secondaryDbConfig]);
         $secondaryConnection = DB::connection('secondary');
     
-        // Obtener los servicios desde las tablas
-        $servicios = $secondaryConnection->table('servicios')->get();
-        $serviciosAdicionales = $secondaryConnection->table('servicios_adicionales')->get();
-    
         // Obtener las instalaciones y deserializar los campos
         $aDatos = [];
         $aDatos['instalaciones_visualizacion'] = collect($secondaryConnection->table('instalaciones')->get())->map(function ($item) {
             return (array) $item;
         });
         $aDatos['instalaciones'] = $secondaryConnection->table('instalaciones')->get();
-        foreach ($aDatos['instalaciones'] as $instalacion) {
-            $instalacion->horario = @unserialize($instalacion->horario) ?: [];
-            $instalacion->servicios = @unserialize($instalacion->servicios) ?: [];
-        }
+        
     
-        return view('superadmin.edit', compact('ayuntamiento', 'aDatos', 'servicios', 'serviciosAdicionales'));
+        return view('superadmin.edit', compact('ayuntamiento', 'aDatos'));
     }
 
     public function update(Request $request, $id)
@@ -101,6 +94,7 @@ class SuperAdminController extends Controller
             'url' => $url,
             'bd_nombre' => $request->input('bd_nombre'),
             'ver_sponsor' => $request->input('ver_sponsor'),
+            'tipo_calendario' => $request->input('calendario'),
         ]);
 
         // Configurar la conexión a la base de datos secundaria
@@ -130,6 +124,7 @@ class SuperAdminController extends Controller
             $this->agregarInstalacion($request, $secondaryConnection);
         } else {
             // Actualizar las instalaciones existentes
+            $this->actualizarTipoCalendario($request);
             foreach ($request->all() as $key => $value) {
                 if (preg_match('/^nombre_(\d+)$/', $key, $matches)) {
                     $instalacionId = $matches[1];
@@ -138,17 +133,12 @@ class SuperAdminController extends Controller
                         "nombre_$instalacionId" => 'required',
                         "direccion_$instalacionId" => 'required',
                         "tlfno_$instalacionId" => 'required',
-                        "html_normas_$instalacionId" => 'nullable',
-                        "servicios_$instalacionId" => 'nullable',
                         "slug_$instalacionId" => 'required',
                         "politica_$instalacionId" => 'nullable',
-                        "condiciones_$instalacionId" => 'nullable',
-                        "horario_$instalacionId" => 'array',
                     ], [
                         "nombre_$instalacionId.required" => 'El campo nombre es obligatorio.',
                         "direccion_$instalacionId.required" => 'El campo dirección es obligatorio.',
                         "slug_$instalacionId.required" => 'El campo slug es obligatorio.',
-                        "horario_$instalacionId.array" => 'El campo horario debe ser un array.',
                     ]);
     
                     $secondaryConnection
@@ -158,14 +148,11 @@ class SuperAdminController extends Controller
                             'nombre' => $value,
                             'direccion' => $request->input("direccion_$instalacionId"),
                             'tlfno' => $request->input("tlfno_$instalacionId"),
-                            'html_normas' => $request->input("html_normas_$instalacionId"),
-                            'servicios' => serialize($request->input("servicios_$instalacionId")), // Serializar los servicios seleccionados
-                            'horario' => serialize($request->input("horario_$instalacionId")), // Serializar el horario
                             'slug' => $request->input("slug_$instalacionId"),
                             'politica' => $request->input("politica_$instalacionId"),
-                            'condiciones' => $request->input("condiciones_$instalacionId"),
                         ]);
 
+                        // Actualizar los campos adicionales de visualización
                         foreach ($request->all() as $key => $value) {
                             // Verificar si la clave comienza con "ver_" y no es "ver_sponsor"
                             if (Str::startsWith($key, 'ver_') && $key !== 'ver_sponsor') {
@@ -198,12 +185,8 @@ private function agregarInstalacion(Request $request, $secondaryConnection)
         'nombre' => 'required',
         'direccion' => 'required',
         'tlfno' => 'required',
-        'html_normas' => 'nullable',
-        'servicios' => 'nullable',
         'slug' => 'required',
         'politica' => 'nullable',
-        'condiciones' => 'nullable',
-        'horario' => 'array',
     ]);
 
     // Crear la instalación en la base de datos secundaria
@@ -211,16 +194,59 @@ private function agregarInstalacion(Request $request, $secondaryConnection)
         'nombre' => $request->input('nombre'),
         'direccion' => $request->input('direccion'),
         'tlfno' => $request->input('tlfno'),
-        'html_normas' => $request->input('html_normas'),
-        'servicios' => $request->input('servicios'),
         'slug' => $request->input('slug'),
         'tipo_reservas_id' => 1,
         'politica' => $request->input('politica'),
-        'condiciones' => $request->input('condiciones'),
-        'horario' => serialize($request->input('horario')), // Serializar el horario
         'created_at' => now(),
         'updated_at' => now(),
     ]);
+}
+
+public function actualizarTipoCalendario(Request $request)
+{
+    // Configurar la conexión dinámica a la base de datos app_reservas
+    config(['database.connections.dynamic' => [
+        'driver' => 'mysql',
+        'host' =>'localhost',
+        'port' => '3306',
+        'database' =>'app_reservas',
+        'username' => env('DB_USERNAME', 'reservas_vva'),
+        'password' => env('DB_PASSWORD', '#3p720hqK'),
+        'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix' => '',
+        'strict' => true,
+    ]]);
+
+    // Conectar a la base de datos dinámica
+    $dynamicConnection = DB::connection('dynamic');
+
+    // Recorrer todos los campos del request
+    foreach ($request->all() as $key => $value) {
+        // Verificar si la clave comienza con "slug_"
+        if (preg_match('/^slug_(\d+)$/', $key, $matches)) {
+            $instalacionId = $matches[1]; // Extraer el ID de la instalación
+            $slug = $value; // El valor del campo slug
+            // Buscar el registro que coincida con el slug
+            $registro = $dynamicConnection->table('instalaciones')
+                ->where('slug', $slug)
+                ->first();
+
+            if (!$registro) {
+                return response()->json(['error' => 'Registro no encontrado'], 404);
+            }
+            // Actualizar el campo tipo_calendario
+            $dynamicConnection->table('instalaciones')
+                ->where('slug', $slug)
+                ->update([
+                    'tipo_calendario' => $request->input('calendario'),
+                ]);
+
+            return response()->json(['success' => 'Campo tipo_calendario actualizado correctamente']);
+        }
+    }
+
+    return response()->json(['error' => 'No se encontró ningún slug válido en la solicitud'], 400);
 }
 
 public function destroy($id)

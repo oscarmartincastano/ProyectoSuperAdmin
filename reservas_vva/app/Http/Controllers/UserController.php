@@ -438,56 +438,156 @@ class UserController extends Controller
 
 
     public function index_nuevo(Request $request)
-    {
-        $instalacion = Instalacion::where('slug', $request->slug_instalacion)->first();
-        // return $instalacion;
-        $eventos = Evento::where([['id_instalacion', $instalacion->id], ['insc_fecha_inicio', '<=', date('Y-m-d H:i:s')], ['insc_fecha_fin', '>=', date('Y-m-d H:i:s')]])->orderBy('fecha_inicio')->get();
+{
+    // Obtener el segmento después de "https://gestioninstalacion.es/" en la URL
+    $segmento = str_replace('https://gestioninstalacion.es/', '', $request->slug_instalacion);
 
-        if ( isset($instalacion->deportes_clases->first()->id)){
-            $pistas = Pista::where([['id_deporte', $instalacion->deportes_clases->first()->id], ['id_instalacion', $instalacion->id]])->get();
-        }
-        else{
-            $pistas=null;
-        }
+    // Conectar a la base de datos 'superadmin' y buscar el registro que coincida con el segmento
+    $registro = DB::connection('superadmin')
+        ->table('superadmin')
+        ->where('url', 'like', "https://gestioninstalacion.es/$segmento")
+        ->first();
 
-        $servicios= Servicio::all();
+    // Verificar si se encontró el registro
+    if (!$registro) {
+        return response()->json(['error' => 'Registro no encontrado en la base de datos superadmin'], 404);
+    }
+
+    // Obtener el campo tipo_calendario
+    $tipoCalendario = $registro->tipo_calendario;
+
+    // Continuar con la lógica existente de la función index_nuevo
+    $instalacion = Instalacion::where('slug', $request->slug_instalacion)->first();
+    $eventos = Evento::where([
+        ['id_instalacion', $instalacion->id],
+        ['insc_fecha_inicio', '<=', date('Y-m-d H:i:s')],
+        ['insc_fecha_fin', '>=', date('Y-m-d H:i:s')],
+    ])->orderBy('fecha_inicio')->get();
+
+    if (isset($instalacion->deportes_clases->first()->id)) {
+        $pistas = Pista::where([
+            ['id_instalacion', $instalacion->id],
+        ])->get();
+    } else {
+        $pistas = null;
+    }
+
+    $servicios = Servicio::all();
+    $dias_festivos = Dias_festivos::all(['dia_festivo']);
+    $user = Auth::user();
+    if ($tipoCalendario == 0) {
+        // Lógica existente para tipo_calendario = 0
         $suma_hora = 0;
-        for ($y=7; $y < intval(explode(":", date('H:i', strtotime(date('Y-m-d H:i'))))[0]); $y++) {
+        for ($y = 7; $y < intval(explode(":", date('H:i', strtotime(date('Y-m-d H:i'))))[0]); $y++) {
             $suma_hora += 40;
         }
-        $hora_coord = $suma_hora + (explode(":", date('H:i', strtotime(date('Y-m-d H:i'))))[1]*2/3);
+        $hora_coord = $suma_hora + (explode(":", date('H:i', strtotime(date('Y-m-d H:i'))))[1] * 2 / 3);
         $block_pista = str_replace(',', '.', $hora_coord);
 
-        $dias_festivos = Dias_festivos::all(['dia_festivo']);
-
-        $user = Auth::user();
-
-        if($request->slug_instalacion == "la-guijarrosa" || $request->slug_instalacion == "santaella"){
+        if ($request->slug_instalacion == "la-guijarrosa" || $request->slug_instalacion == "santaella") {
             $bonos = Bono::all();
-        }else{
+        } else {
             $bonos = collect();
         }
 
-        if(($request->slug_instalacion == "la-guijarrosa" || $request->slug_instalacion == "santaella") && $user){
+        if (($request->slug_instalacion == "la-guijarrosa" || $request->slug_instalacion == "santaella") && $user) {
             $paso = $user->accesos()->first();
             $ultimoRegistro = $user->registros()->latest()->first();
-            return view('new.index', compact('instalacion', 'pistas', 'block_pista', 'eventos','dias_festivos','servicios','paso','ultimoRegistro','bonos'));
-        }else{
-            return view('new.index', compact('instalacion', 'pistas', 'block_pista', 'eventos','dias_festivos','servicios'));
+            return view('new.index', compact('instalacion', 'pistas', 'block_pista', 'eventos', 'dias_festivos', 'servicios', 'paso', 'ultimoRegistro', 'bonos', 'tipoCalendario'));
+        } else {
+            return view('new.index', compact('instalacion', 'pistas', 'block_pista', 'eventos', 'dias_festivos', 'servicios', 'tipoCalendario'));
+        }
+    } elseif ($tipoCalendario == 1) {
+        // Nueva lógica para tipo_calendario = 1
+        $pistas = Pista::where([['id_instalacion', $instalacion->id], ['active', 1]])->get();
+        // Determinar la pista seleccionada
+    if ($request->id) {
+        $pista_selected = Pista::find($request->id);
+    } else {
+        $pista_selected = $pistas->first(); // Seleccionar la primera pista por defecto
+    }
+        
+        if (!$pista_selected) {
+            abort(404, 'Pista no encontrada');
+        }
+    
+
+        if (isset($request->semana)) {
+            if ($pista_selected->max_dias_antelacion > 10) {
+                $current_date = new DateTime(date("Y-m-d", strtotime(date('Y-m-d') . "+{$request->semana} weeks")));
+                $plus_date = new DateTime(date("Y-m-d", strtotime(date('Y-m-d') . "+{$request->semana} weeks")));
+                $plus_date->add(new \DateInterval('P8D'));
+            } else {
+                $current_date = new DateTime(date("Y-m-d", strtotime(date('Y-m-d') . "+" . $request->semana * $pista_selected->max_dias_antelacion . " days")));
+                $plus_date = new DateTime(date("Y-m-d", strtotime(date('Y-m-d') . "+" . $request->semana * $pista_selected->max_dias_antelacion . " days")));
+                $plus_date->add(new \DateInterval('P' . $pista_selected->max_dias_antelacion . 'D'));
+            }
+        } elseif (isset($request->dia)) {
+            $fecha = Carbon::createFromFormat('d/m/Y', $request->dia)->format('d-m-Y');
+            $current_date = new DateTime($fecha);
+            $plus_date = new DateTime($fecha);
+            $plus_date->add(new \DateInterval('P' . $pista_selected->max_dias_antelacion . 'D'));
+        } else {
+            $current_date = new DateTime();
+            $plus_date = new DateTime();
+            $plus_date->add(new \DateInterval('P' . $pista_selected->max_dias_antelacion . 'D'));
         }
 
+        $date_for_valid = new DateTime();
+        $date_for_valid->add(new \DateInterval('P' . $pista_selected->max_dias_antelacion . 'D'));
+
+        $valid_period = new \DatePeriod(new DateTime(), \DateInterval::createFromDateString('1 day'), $date_for_valid);
+        $period = new \DatePeriod($current_date, \DateInterval::createFromDateString('1 day'), $plus_date);
+        $horarios_final = $pista_selected->horarios_final($period);
+
+        return view('new.index', compact('instalacion', 'pistas', 'period', 'horarios_final', 'dias_festivos', 'tipoCalendario', 'pista_selected', 'eventos', 'servicios', 'valid_period'));
+    }
+}
+
+public function obtenerHorarios(Request $request, $slug_instalacion, $nombre, $tipo, $id)
+{
+    // Buscar la pista por ID
+    $pista = Pista::find($id);
+
+    if (!$pista) {
+        return response()->json(['error' => 'Pista no encontrada'], 404);
     }
 
-    public function pistas_por_deportes_fecha(Request $request) {
+    // Obtener la fecha seleccionada o usar la fecha actual
+    $fecha = $request->query('dia', date('Y-m-d'));
+
+    // Crear un periodo de fechas basado en la configuración de la pista
+    $current_date = new \DateTime($fecha);
+    $plus_date = (clone $current_date)->add(new \DateInterval('P' . $pista->max_dias_antelacion . 'D'));
+    $period = new \DatePeriod($current_date, \DateInterval::createFromDateString('1 day'), $plus_date);
+
+    // Obtener los horarios finales para el periodo
+    $horarios_final = $pista->horarios_final($period);
+
+    // Devolver los horarios en formato JSON
+    return response()->json($horarios_final);
+}
+
+public function pistas_por_deportes_fecha(Request $request) {
+    try {
         $instalacion = Instalacion::where('slug', $request->slug_instalacion)->first();
         $fecha = $request->fecha;
 
-        $pistas = Pista::where([['id_deporte', $request->deporte], ['id_instalacion', $instalacion->id],['active',1]])->get();
+        $pistas = Pista::where([
+            ['id_deporte', $request->deporte],
+            ['id_instalacion', $instalacion->id],
+            ['active', 1]
+        ])->get();
+
         foreach ($pistas as $key => $value) {
             $value->horario_con_reservas_por_dia = $value->horario_con_reservas_por_dia($fecha);
         }
-        return $pistas;
+
+        return response()->json($pistas);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
 
     public function pistas_por_deportes_mes(Request $request){
         $instalacion = Instalacion::where('slug', $request->slug_instalacion)->first();
@@ -499,6 +599,8 @@ class UserController extends Controller
         foreach ($pistas as $key => $value) {
             $value->horario_con_reservas_por_mes = $value->horario_con_reservas_por_mes($timestamp);
         }
+
+        dd($pistas);
         return $pistas;
     }
 

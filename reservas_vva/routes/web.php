@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use Illuminate\Support\Facades\Route;
 use Ssheduardo\Redsys\Facades\Redsys;
 use MikeMcLin\WpPassword\Facades\WpPassword;
+use Illuminate\Support\Facades\Log;
 
 use App\Mail\NewReserva;
 use App\Mail\NewInscripcion;
@@ -174,6 +175,8 @@ Route::group(['prefix' => 'manager'], function () {
 });
 
 Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalacion'], function () {
+    Route::get('/pistas-por-deporte/{deporte}/{fecha}', 'UserController@pistas_por_deportes_fecha');
+    Route::get('/pistas-por-deporte-mes/{deporte}/{mes}/{year}', 'UserController@pistas_por_deportes_mes');
     Route::get('/pruebaemail', function () {
         // Aquí debes crear o obtener un usuario y un participante de prueba
         $user = User::find(3555); // Cambia el ID según lo necesites
@@ -286,9 +289,6 @@ Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalaci
     Route::get('/new/mis-servicios', 'UserController@mis_servicios');
     Route::post('/new/perfil', 'UserController@edit_perfil');
     Route::get('/new/contacto', 'UserController@contacto_instalacion_new');
-
-    Route::get('/pistas-por-deporte/{deporte}/{fecha}', 'UserController@pistas_por_deportes_fecha');
-    Route::get('/pistas-por-deporte-mes/{deporte}/{mes}/{year}', 'UserController@pistas_por_deportes_mes');
 
     //Dar de baja un servicio
     Route::get('/new/mis-servicios/{servicio}/baja', 'UserController@baja_servicio')->name('servicio.baja');
@@ -612,7 +612,6 @@ Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalaci
             Route::get('/campos-personalizados/{id}/delete', 'InstalacionController@delete_campos_personalizados');
         });
     });
-
     Route::group(['prefix' => '{deporte}'], function () {
         Route::get('/', 'UserController@pistas');
         Route::group(['prefix' => '{id_pista}'], function () {
@@ -623,6 +622,12 @@ Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalaci
                 Route::post('/{timestamp}/reserva', 'RedsysController@pago');
             });
         });
+    });
+
+    // Ruta para el calendario tipo 2
+    Route::group(['prefix'=>'{nombre}/{tipo}/{id}/{id_instalacion}'], function () {
+        Route::get('/', 'UserController@index_nuevo');
+        Route::get('/horarios', 'UserController@obtenerHorarios');
     });
 });
 

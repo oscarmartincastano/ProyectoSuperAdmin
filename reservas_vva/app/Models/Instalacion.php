@@ -28,7 +28,13 @@ class Instalacion extends Model
         'horario',
         'slug',
         'prefijo_pedido',
-        'tipo_reservas_id'
+        'tipo_reservas_id',
+        'politica',
+        'politica_html',
+        'terminos',
+        'terminos_html',
+        'condiciones',
+        'condiciones_html',
     ];
 
     protected $appends = ['deportes', 'user_admin', 'users_sin_validar'];

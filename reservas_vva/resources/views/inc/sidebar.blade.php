@@ -242,11 +242,12 @@
                   <a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion">Instalación</a>
                   <span class="icon-thumbnail">in</span>
                 </li>
+                @if(auth()->user()->instalacion->ver_servicios == 1)
                   <li class="{{ request()->is(request()->slug_instalacion . '/admin/configuracion/servicios') ? 'active' : '' }}">
                       <a href="/{{ request()->slug_instalacion }}/admin/configuracion/servicios">Servicios</a>
                       <span class="icon-thumbnail">se</span>
                   </li>
-                  
+                @endif
                   @if((request()->slug_instalacion == 'santaella'))
                   <li class="{{ request()->is(request()->slug_instalacion . '/admin/configuracion/bonos') ? 'active' : '' }}">
                     <a href="/{{ request()->slug_instalacion }}/admin/configuracion/bonos">Bonos</a>

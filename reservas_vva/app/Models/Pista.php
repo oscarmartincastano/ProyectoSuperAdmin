@@ -11,6 +11,7 @@ use App\Models\Desactivacion_reserva;
 use App\Models\Campos_personalizados;
 use App\Models\Desactivaciones_periodicas;
 use App\Models\Excepciones_desactivaciones_periodicas;
+use Carbon\Carbon;
 
 class Pista extends Model
 {
@@ -473,6 +474,156 @@ class Pista extends Model
 
         }
         return $horario;
+    }
+
+    public function horarios_final($period)
+    {
+        $final = [];
+
+        $reservasActivasFinal = Reserva::where(
+            [
+                ['id_pista', $this->id],
+                ['estado', '!=', 'canceled'],
+                ['fecha', '>=', $period->start->format('Y-m-d')],
+                ['fecha', '<=', $period->end->format('Y-m-d')]
+            ]
+        )->get();
+        // foreach ($reservasActivasFinal as $key => $value) {
+        //     if($value->id == 84878){
+        //     }
+        // }
+        $desactivacionesReservas = Desactivacion_reserva::where([['id_pista', $this->id], ['timestamp', '>=', $period->start->getTimestamp()], ['timestamp', '<=', $period->end->getTimestamp()]])->get();
+        $excepcionesDesactivacionesPeriodicas = Excepciones_desactivaciones_periodicas::where([['id_pista', $this->id], ['timestamp', '>=', $period->start->getTimestamp()], ['timestamp', '<=', $period->end->getTimestamp()]])->get();
+        foreach ($period as $fecha) {
+            $carbon_fecha = \Carbon\Carbon::parse($fecha);
+            $horario = [];
+
+            foreach ($this->horario_deserialized as $key => $item) {
+                if (
+                    in_array($carbon_fecha->dayOfWeek, $item['dias'])
+                    || ($carbon_fecha->format('w') == 0 && in_array(7, $item['dias']))
+                ) {
+                    foreach ($item['intervalo'] as $index => $intervalo) {
+                        $hInicio = Carbon::parse($carbon_fecha->format('Y-m-d') . ' ' . $intervalo['hinicio']);
+                        $hFin = Carbon::parse($carbon_fecha->format('Y-m-d') . ' ' . $intervalo['hfin']);
+
+                        $secuencia = $intervalo['secuencia'];
+
+                        $horas = [];
+                        while ($hInicio->lt($hFin)) {
+                            $horas[] = $hInicio->copy();
+                            $hInicio->addMinutes($secuencia);
+                        }
+
+                        foreach ($horas as $i => $hora) {
+
+                            $timestamp = $hora->getTimestamp();
+       
+                            $reservasActivas =
+                                $reservasActivasFinal->where('estado', '!=', 'canceled')->filter(function ($reserva) use ($timestamp) {
+                                    return in_array($timestamp, $reserva->horarios_deserialized);
+                                });
+
+
+                            // if($fecha->format('d-m-Y') == "05-06-2024"){
+                            //     if($timestamp == 1717592400){
+                            //         dd($reservasActivas, $horas);
+                            //     }
+                
+                            // }
+                            $fecha1 = Carbon::createFromTimestamp($timestamp)
+                                ->startOfDay();
+
+
+             
+                            // checkReservaActiva
+
+                            $horario[$index][$i]['valida'] = false;
+                            $fecha2 = Carbon::now()->addDays($this->max_dias_antelacion)->startOfDay();
+
+
+                            $checkDesactivado = false;
+                            $desactivaciones = count($desactivacionesReservas->where('timestamp', $timestamp));
+
+                            if (
+                                $desactivaciones > 0
+                            ) {
+                                $checkDesactivado = true;
+                            }
+                            $desactivaciones_periodicas_dia = $this->check_desactivacion_periodica(date('Y-m-d', $timestamp));
+                            if ($desactivaciones_periodicas_dia) {
+                                foreach ($desactivaciones_periodicas_dia as $desactivacion) {
+
+                                    if (
+                                        strtotime(date('H:i', $timestamp)) >= strtotime($desactivacion->hora_inicio) &&
+                                        strtotime(date('H:i', $timestamp)) < strtotime($desactivacion->hora_fin)
+                                    ) {
+
+                                        $excepciones = count($excepcionesDesactivacionesPeriodicas->where('timestamp', $timestamp));
+
+                                        if (
+                                            $excepciones > 0
+                                        ) {
+                                            $checkDesactivado = false;
+                                        }
+                                        $checkDesactivado = true;
+                                    }
+                                }
+                            }
+
+                            $fecha5 = Carbon::now()->addHours($this->atenlacion_reserva)->startOfMinute();
+                            $fecha6 = Carbon::createFromTimestamp($timestamp)->addMinutes($this->get_minutos_given_timestamp($timestamp))->startOfMinute();
+
+                            if (
+                                $fecha1 < $fecha2 &&
+                                !$checkDesactivado &&
+                                $this->reservas_por_tramo > count($reservasActivas) &&
+                                $fecha5 < $fecha6
+
+                            ) {
+                                $horario[$index][$i]['valida'] = true;
+                            }
+                 
+                            $fecha7 = Carbon::now()->startOfDay();
+                            $fecha8 = now()->addDays($this->max_dias_antelacion)->startOfDay();
+                            $fecha9 = Carbon::now()->addHours($this->atenlacion_reserva)->startOfMinute();
+
+                            $fecha10 = Carbon::createFromTimestamp($timestamp)->addMinutes($this->get_minutos_given_timestamp($timestamp))->startOfMinute();
+
+                            $n_reservas_en_espera =
+                                $reservasActivas->filter(function ($reserva) use ($timestamp) {
+                                    return in_array($timestamp, $reserva->horarios_deserialized) && $reserva->estado == 'espera';
+                                })->count();
+
+
+                                $horario[$index][$i]['siguiente_reserva_lista_espera'] =
+                                $fecha7 < $fecha8 &&
+                                !$checkDesactivado &&
+                                $fecha9 < $fecha10 &&
+                                $this->reservas_por_tramo - count($reservasActivas) <= 0 &&
+                                $this->instalacion && $this->instalacion->configuracion && // Verifica que la relación esté cargada
+                                $this->instalacion->configuracion->reservas_lista_espera > 0 &&
+                                $n_reservas_en_espera < $this->instalacion->configuracion->reservas_lista_espera;
+
+                            $horario[$index][$i]['reservado'] = $reservasActivas ? true : false;
+                            $horario[$index][$i]['string'] = $hora->format('H:i') . ' - ' . $hora->copy()->addMinutes($secuencia)->format('H:i');
+                            $horario[$index][$i]['height'] = str_replace(',', '.', $intervalo['secuencia'] / 10);
+                            $horario[$index][$i]['tramos'] = 1;
+                            $horario[$index][$i]['timestamp'] = $timestamp;
+                            $horario[$index][$i]['num_res'] = count($reservasActivas);
+                            $horario[$index][$i]['reunion'] = $this->id_instalacion == 2 ? ($reservasActivas[0] ?? null)  : null;
+              
+                            // dd($this->instalacion);
+                            if ($hora->format('H:i') == $intervalo['hfin']) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            $final[] = $horario;
+        }
+        return $final;
     }
 
 

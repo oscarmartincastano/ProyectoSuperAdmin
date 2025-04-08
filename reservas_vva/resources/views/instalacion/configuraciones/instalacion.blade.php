@@ -32,6 +32,15 @@
 
                             <tbody>
                                 <tr>
+                                    <th>Tipo de calendario</th>
+                                    @if($tipoCalendario == 0)
+                                    <td>Calendario 1</td>
+                                    @elseif($tipoCalendario == 1)
+                                    <td>Calendario 2</td>
+                                    @endif
+                                    <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/tipo_calendario" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                                </tr>
+                                <tr>
                                     <th>Nombre</th>
                                     <td>{{ $instalacion->nombre }}</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/nombre" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
@@ -46,11 +55,12 @@
                                     <td><img src="/img/portadas-inst/{{ $instalacion->slug }}.jpg" style="max-width: 200px"></td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/cover" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
+                                @if($instalacion->ver_horario==true)
                                 <tr>
                                     <th>Horario instalación</th>
                                     <td>
-                                        <pre>{{ print_r($instalacion, true) }}</pre>
-                                        @if($instalacion->horario && $instalacion->ver_horario == true)
+                                        {{-- <pre>{{ print_r($instalacion, true) }}</pre> --}}
+                                        @if($instalacion->horario)
                                             @foreach (unserialize($instalacion->horario) as $index => $horario)
                                                 <div class="d-flex align-items-center">
                                                     <div>{{ $index }} -></div>
@@ -65,10 +75,16 @@
                                     </td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/horario" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
+                                @endif
+
+                                @php
+                                // dd($instalacion->servicios);
+                                @endphp
+                                @if($instalacion->ver_servicios==true)
                                 <tr>
                                     <th>Servicios</th>
                                     <td>
-                                        @if ($instalacion->servicios && $instalacion->ver_servicios == true)
+                                        @if ($instalacion->servicios && $instalacion->servicios != null && $instalacion->servicios != '[]')
                                             @foreach (unserialize($instalacion->servicios) as $item)
                                                 {{ \App\Models\Servicios_adicionales::find($item)->nombre }},
                                             @endforeach
@@ -76,6 +92,8 @@
                                     </td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/servicios" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
+
+                                @endif
                                 {{-- <tr>
                                     <th>Horario de la instalación</th>
                                     <td>sdf</td>
@@ -106,11 +124,21 @@
                                     <td>{{ $instalacion->tlfno }}</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/tlfno" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
+                                @if($instalacion->ver_normas==true)
                                 <tr>
                                     <th>Html normas</th>
                                     <td>{{ $instalacion->html_normas }}</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/html_normas" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
+                                @endif
+                                @if($instalacion->ver_politica==true)
+                                <tr>
+                                    <th>Html política de privacidad</th>
+                                    <td>{{ $instalacion->politica_html }}</td>
+                                    <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/politica_html" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                                </tr>
+                                @endif
+                                <tr>
                                     <th>Prefijo pedido</th>
                                     <td>{{ $instalacion->prefijo_pedido  }}-########</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/prefijo_pedido" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>

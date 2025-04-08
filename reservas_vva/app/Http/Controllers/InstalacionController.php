@@ -1072,9 +1072,28 @@ class InstalacionController extends Controller
     }
 
     public function edit_info(Request $request) {
-        $instalacion = auth()->user()->instalacion->toArray();
-
-        return view('instalacion.editdata.edit', compact('instalacion'));
+        // Obtener la instalación actual del usuario autenticado
+        $instalacion = auth()->user()->instalacion;
+    
+        // Conectar a la base de datos 'superadmin' y buscar el registro que coincida con el slug de la instalación
+        $registro = DB::connection('superadmin')
+            ->table('superadmin')
+            ->where('url', 'like', "https://gestioninstalacion.es/{$instalacion->slug}")
+            ->first();
+    
+        // Verificar si se encontró el registro
+        if (!$registro) {
+            return redirect()->back()->with('error', 'No se encontró el registro en la base de datos superadmin.');
+        }
+    
+        // Obtener el campo tipo_calendario
+        $tipoCalendario = $registro->tipo_calendario;
+    
+        // Convertir la instalación a un array para la vista
+        $instalacion = $instalacion->toArray();
+    
+        // Pasar los datos a la vista
+        return view('instalacion.editdata.edit', compact('instalacion', 'tipoCalendario'));
     }
 
     public function editar_info(Request $request) {
@@ -1088,7 +1107,6 @@ class InstalacionController extends Controller
         if (isset($data['horario'])) {
             $data['horario'] = serialize($data['horario']);
         }
-
         if ($request->logo) {
             $image = $request->file('logo');
             $img = Image::make($image->getRealPath());
@@ -1141,7 +1159,19 @@ class InstalacionController extends Controller
                 $img->save($path .'/'. $name, 85, 'jpg');
             }
 
-        } else{
+        } elseif(($request->tipo_calendario == 1 || $request->tipo_calendario == 0) && $request->tipo_calendario != null) {
+            $registro = DB::connection('superadmin')
+            ->table('superadmin')
+            ->where('url', 'like', "https://gestioninstalacion.es/{$instalacion->slug}")
+            ->first();
+
+            // Actualizar el campo tipo_calendario de $registro
+            DB::connection('superadmin')
+                ->table('superadmin')
+                ->where('id', $registro->id)
+                ->update(['tipo_calendario' => $request->tipo_calendario]);
+        } else {
+
             Instalacion::find($instalacion->id)->update($data);
         }
 
@@ -1295,8 +1325,25 @@ class InstalacionController extends Controller
     }
 
     public function configuracion_instalacion(Request $request) {
+        // Obtener la instalación actual del usuario autenticado
         $instalacion = auth()->user()->instalacion;
-        return view('instalacion.configuraciones.instalacion', compact('instalacion'));
+    
+        // Conectar a la base de datos 'superadmin' y buscar el registro que coincida con el slug de la instalación
+        $registro = DB::connection('superadmin')
+            ->table('superadmin')
+            ->Where('url', 'like', "https://gestioninstalacion.es/{$instalacion->slug}")
+            ->first();
+    
+        // Verificar si se encontró el registro
+        if (!$registro) {
+            return redirect()->back()->with('error', 'No se encontró el registro en la base de datos superadmin.');
+        }
+    
+        // Obtener el campo tipo_calendario
+        $tipoCalendario = $registro->tipo_calendario;
+    
+        // Pasar el tipo_calendario a la vista junto con la instalación
+        return view('instalacion.configuraciones.instalacion', compact('instalacion', 'tipoCalendario'));
     }
 
     public function edit_configuracion(Request $request) {

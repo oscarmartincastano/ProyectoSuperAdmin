@@ -63,14 +63,17 @@
                                     Bloquear el día de hoy
                                 </label>
                             </div> --}}
+                            {{-- @php
+                            dd($instalacion->configuracion);
+                            @endphp --}}
                             <div class="form-group mb-4">
                                 <label for="max_reservas_tipo_espacio">Reservas máximas por usuario para cada tipo de espacio</label>
                                 <div class="border p-3">
-                                    @foreach ($instalacion->deportes as $tipo_espacio)
+                                    {{-- @foreach ($instalacion->deportes as $tipo_espacio)
                                         <label for="max_reservas_tipo_espacio[{{ $tipo_espacio }}]">{{ $tipo_espacio }}</label>
                                         <input type="number" class="form-control" name="max_reservas_tipo_espacio[{{ $tipo_espacio }}]" id="max_reservas_tipo_espacio[{{ $tipo_espacio }}]"
                                             value="{{ unserialize($instalacion->configuracion->max_reservas_tipo_espacio)[$tipo_espacio] ?? '' }}">
-                                    @endforeach
+                                    @endforeach --}}
                                 </div>
                             </div>
                             <input type="submit" value="Editar" class="btn btn-primary btn-lg m-b-10 mt-3 mt-2">

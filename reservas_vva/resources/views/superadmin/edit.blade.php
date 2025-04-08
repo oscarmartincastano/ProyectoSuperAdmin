@@ -25,6 +25,7 @@
         <!-- Información del Ayuntamiento -->
         <div class="mb-4">
             <h3 class="text-primary">Información del Ayuntamiento</h3>
+            
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="name" class="form-label">Nombre</label>
@@ -42,7 +43,6 @@
                     <input type="text" class="form-control" id="bd_nombre" name="bd_nombre"
                         value="{{ old('bd_nombre', $ayuntamiento->bd_nombre) }}" placeholder="Nombre de la base de datos">
                 </div>
-                @if ($ayuntamiento->name == "Superate Sport")
                 {{-- Radio button para seleccionar si ver los sponsor o no --}}
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Mostrar Sponsors</label>
@@ -57,7 +57,22 @@
                         <label class="form-check-label" for="ver_sponsor_no">No</label>
                     </div>
                 </div>
-                @endif
+                
+                {{-- Seleccionar calendario 1 con el valor 0 o calendario 2 con el valor 1 --}}
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Seleccionar Calendario</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="calendario" id="calendario_1" value="0"
+                            {{ old('calendario', $ayuntamiento->tipo_calendario ?? 0) == 0 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="calendario_1">Calendario 1</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="calendario" id="calendario_2" value="1"
+                            {{ old('calendario', $ayuntamiento->tipo_calendario ?? 0) == 1 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="calendario_2">Calendario 2</label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -128,107 +143,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Campo: HTML Normas -->
-                            <div class="col-md-12 mb-3">
-                                <label for="html_normas_{{ $instalacion->id }}" class="form-label">HTML
-                                    Normas</label>
-                                <textarea class="form-control @error('html_normas_' . $instalacion->id) is-invalid @enderror"
-                                    name="html_normas_{{ $instalacion->id }}" id="html_normas_{{ $instalacion->id }}" rows="6"
-                                    placeholder="HTML Normas">{{ old('html_normas_' . $instalacion->id, $instalacion->html_normas) }}</textarea>
-                                @error('html_normas_' . $instalacion->id)
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
-                            <!-- Campo: Servicios -->
-                            <div class="col-md-12 mb-3">
-                                <label for="servicios_{{ $instalacion->id }}" class="form-label">Servicios</label>
-                                <div class="border p-3 rounded bg-light">
-                                    <h6 class="text-primary">Selecciona los servicios disponibles:</h6>
-                                    <div class="row">
-                                        @if ($servicios->isEmpty() && $serviciosAdicionales->isEmpty())
-                                            <div class="col-12">
-                                                <p class="text-danger">No hay servicios disponibles para
-                                                    seleccionar.</p>
-                                            </div>
-                                        @else
-                                            @foreach ($servicios as $servicio)
-                                                <div class="col-md-4">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="servicio_{{ $instalacion->id }}_{{ $servicio->id }}"
-                                                            name="servicios_{{ $instalacion->id }}[]"
-                                                            value="{{ $servicio->id }}"
-                                                            @if (in_array($servicio->id, $instalacion->servicios ?? [])) checked @endif>
-                                                        <label class="form-check-label"
-                                                            for="servicio_{{ $instalacion->id }}_{{ $servicio->id }}">
-                                                            {{ $servicio->nombre }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                            @foreach ($serviciosAdicionales as $servicioAdicional)
-                                                <div class="col-md-4">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="servicio_adicional_{{ $instalacion->id }}_{{ $servicioAdicional->id }}"
-                                                            name="servicios_{{ $instalacion->id }}[]"
-                                                            value="{{ $servicioAdicional->id }}"
-                                                            @if (in_array($servicioAdicional->id, $instalacion->servicios ?? [])) checked @endif>
-                                                        <label class="form-check-label"
-                                                            for="servicio_adicional_{{ $instalacion->id }}_{{ $servicioAdicional->id }}">
-                                                            {{ $servicioAdicional->nombre }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Campo: Horario -->
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Horario</label>
-                                <div class="border p-3 rounded bg-light">
-                                    @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
-                                        <div class="mb-3">
-                                            <h6 class="text-primary">Día: {{ $dia }}</h6>
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Hora Inicio</th>
-                                                        <th>Hora Fin</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @for ($i = 0; $i < 2; $i++)
-                                                        {{-- Dos intervalos por día --}}
-                                                        <tr>
-                                                            <td>
-                                                                <input type="time" class="form-control"
-                                                                    name="horario_{{ $instalacion->id }}[{{ strtolower($dia) }}][intervalo][{{ $i }}][hinicio]"
-                                                                    value="{{ old('horario_' . $instalacion->id . '.' . strtolower($dia) . ".intervalo.$i.hinicio", $instalacion->horario[strtolower($dia)]['intervalo'][$i]['hinicio'] ?? '') }}"
-                                                                    placeholder="Hora Inicio">
-                                                            </td>
-                                                            <td>
-                                                                <input type="time" class="form-control"
-                                                                    name="horario_{{ $instalacion->id }}[{{ strtolower($dia) }}][intervalo][{{ $i }}][hfin]"
-                                                                    value="{{ old('horario_' . $instalacion->id . '.' . strtolower($dia) . ".intervalo.$i.hfin", $instalacion->horario[strtolower($dia)]['intervalo'][$i]['hfin'] ?? '') }}"
-                                                                    placeholder="Hora Fin">
-                                                            </td>
-                                                        </tr>
-                                                    @endfor
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
                             <!-- Campo: Política -->
                             <div class="col-md-12 mb-3">
                                 <label for="politica_{{ $instalacion->id }}" class="form-label">Política</label>
@@ -242,7 +156,7 @@
                                 @enderror
                             </div>
 
-                            <!-- Campo: Condiciones -->
+                            {{-- <!-- Campo: Condiciones -->
                             <div class="col-md-12 mb-3">
                                 <label for="condiciones_{{ $instalacion->id }}" class="form-label">Condiciones</label>
                                 <textarea class="form-control @error('condiciones_' . $instalacion->id) is-invalid @enderror"
@@ -253,7 +167,7 @@
                                         {{ $message }}
                                     </div>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             <!-- Botones de radio para opciones de visualización -->
                             <div class="col-md-12 mb-3">
@@ -332,113 +246,12 @@
                                 value="{{ old('slug') }}" placeholder="Slug">
                         </div>
 
-                        <!-- Campo: HTML Normas -->
-                        <div class="col-md-6 mb-3">
-                            <label for="html_normas" class="form-label">HTML Normas</label>
-                            <textarea class="form-control @error('html_normas') is-invalid @enderror" name="html_normas" id="html_normas"
-                                rows="6" placeholder="HTML Normas">{{ old('html_normas') }}</textarea>
-                            @error('html_normas')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        <!-- Campo: Servicios -->
-                        <div class="col-md-12 mb-3">
-                            <label for="servicios" class="form-label">Servicios</label>
-                            <div class="border p-3 rounded bg-light">
-                                <h6 class="text-primary">Selecciona los servicios disponibles:</h6>
-                                <div class="row">
-                                    @if ($servicios->isEmpty() && $serviciosAdicionales->isEmpty())
-                                        <div class="col-12">
-                                            <p class="text-danger">No hay servicios disponibles para seleccionar.
-                                            </p>
-                                        </div>
-                                    @else
-                                        @foreach ($servicios as $servicio)
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        id="servicio_{{ $servicio->id }}" name="servicios[]"
-                                                        value="{{ $servicio->id }}"
-                                                        @if (is_array(old('servicios')) && in_array($servicio->id, old('servicios'))) checked @endif>
-                                                    <label class="form-check-label" for="servicio_{{ $servicio->id }}">
-                                                        {{ $servicio->nombre }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        @endforeach
-
-                                        @foreach ($serviciosAdicionales as $servicioAdicional)
-                                            <div class="col-md-4">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        id="servicio_adicional_{{ $servicioAdicional->id }}"
-                                                        name="servicios[]" value="{{ $servicioAdicional->id }}"
-                                                        @if (is_array(old('servicios')) && in_array($servicioAdicional->id, old('servicios'))) checked @endif>
-                                                    <label class="form-check-label"
-                                                        for="servicio_adicional_{{ $servicioAdicional->id }}">
-                                                        {{ $servicioAdicional->nombre }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Campo: Horario -->
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label">Horario</label>
-                            <div class="border p-3 rounded bg-light">
-                                @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
-                                    <div class="mb-3">
-                                        <h6 class="text-primary">Día: {{ $dia }}</h6>
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Hora Inicio</th>
-                                                    <th>Hora Fin</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @for ($i = 0; $i < 2; $i++)
-                                                    {{-- Dos intervalos por día --}}
-                                                    <tr>
-                                                        <td>
-                                                            <input type="time" class="form-control"
-                                                                name="horario[{{ strtolower($dia) }}][intervalo][{{ $i }}][hinicio]"
-                                                                value="{{ old('horario.' . strtolower($dia) . ".intervalo.$i.hinicio") }}"
-                                                                placeholder="Hora Inicio">
-                                                        </td>
-                                                        <td>
-                                                            <input type="time" class="form-control"
-                                                                name="horario[{{ strtolower($dia) }}][intervalo][{{ $i }}][hfin]"
-                                                                value="{{ old('horario.' . strtolower($dia) . ".intervalo.$i.hfin") }}"
-                                                                placeholder="Hora Fin">
-                                                        </td>
-                                                    </tr>
-                                                @endfor
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
                         <!-- Campo: Política -->
                         <div class="col-md-6 mb-3">
                             <label for="politica" class="form-label">Política</label>
                             <textarea class="form-control" name="politica" id="politica" rows="6" placeholder="Política">{{ old('politica') }}</textarea>
                         </div>
 
-                        <!-- Campo: Condiciones -->
-                        <div class="col-md-6 mb-3">
-                            <label for="condiciones" class="form-label">Condiciones</label>
-                            <textarea class="form-control" name="condiciones" id="condiciones" rows="6" placeholder="Condiciones">{{ old('condiciones') }}</textarea>
-                        </div>
                     </div>
                 </div>
             @endif

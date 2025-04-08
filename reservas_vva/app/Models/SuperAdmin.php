@@ -17,5 +17,6 @@ class SuperAdmin extends Model
         'url',
         'bd_nombre',
         'ver_sponsor',
+        'tipo_calendario',
     ];
 }
