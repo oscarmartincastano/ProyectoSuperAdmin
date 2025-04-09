@@ -1178,9 +1178,7 @@
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
-                                                        <div
-                                                            class="modal-body
-                                                                ">
+                                                        <div class="modal-body">
                                                             <img src="/img/eventos/{{ $instalacion->slug }}/{{ $item->id }}.jpg"
                                                                 style="max-height:100%;max-width:100%">
                                                         </div>
@@ -1301,7 +1299,7 @@
     </div>
     @endif
 
-    @if ($servicios->count() and $instalacion->ver_servicios == 1)
+    @if ($servicios->count() and $instalacion->ver_servicios == 1 and $instalacion->ver_servicios_admin == 1)
         <div class="card shadow-box mb-4">
             <div class="card-header bg-white font-bold" style="font-weight: bold;padding: 12px;font-size: 18px;">Servicios
             </div>
@@ -1476,7 +1474,7 @@
     @if (
         $instalacion->html_normas != '' and
             request()->slug_instalacion != 'eventos-bodega' and
-            $instalacion->ver_normas == 1)
+            $instalacion->ver_normas == 1 and $instalacion->ver_normas_admin == 1)
         <div class="card card-info shadow-box mb-4">
             <div class="card-header bg-white font-bold">
                 @if (request()->slug_instalacion != 'villafranca-navidad' and
@@ -1552,7 +1550,7 @@
                 @endif
                 <div class="card-body p-0" style="padding: 12px">{{-- {{ dd(unserialize($instalacion->horario)) }} --}}
                     <ul class="list-group group-horario">
-                        @if ($instalacion->horario && $instalacion->ver_horario == 1)
+                        @if ($instalacion->horario && $instalacion->ver_horario == 1 && $instalacion->ver_horario_admin == 1)
                             @foreach (unserialize($instalacion->horario) as $index => $horario)
                                 <li class="list-group-item">
                                     <div>{{ $index }}</div>
@@ -1576,6 +1574,7 @@
                 </div>
             </div>
         @endif
+        @if($instalacion->ver_mapa == 1 && $instalacion->ver_mapa_admin == 1)
         <div class="card shadow-box mb-4">
             <div class="card-body p-0">
                 <div style="width: 100%"><iframe width="100%" height="180" frameborder="0" scrolling="no"
@@ -1586,8 +1585,14 @@
             <div class="card-footer bg-white font-bold" style="font-weight: 500;padding: 10px 8px;">Localización:
                 {{ $instalacion->direccion }}</div>
         </div>
+        @else
+        <div class="card shadow-box mb-4">
+            <div class="card-header bg-white font-bold" style="font-weight: bold;padding: 12px;font-size: 18px;">
+                Ubicación no disponible</div>
+        </div>
+        @endif
         @if (request()->slug_instalacion != 'villafranca-de-cordoba')
-            @if (count($instalacion->deportes_clases) > 0)
+            @if (count($instalacion->deportes_clases) > 0 && $instalacion->ver_deportes == 1 && $instalacion->ver_deportes_admin == 1)
                 <div class="card shadow-box mb-4">
                     <div class="card-header bg-white font-bold" style="font-weight: bold;padding: 12px;font-size: 18px;">
                         Deportes</div>
@@ -1612,7 +1617,7 @@
                     request()->slug_instalacion != 'villafranca-actividades' and
                     request()->slug_instalacion != 'ciprea24' and
                     request()->slug_instalacion != 'eventos-bodega' and
-                    $instalacion->ver_servicios == 1)
+                    $instalacion->ver_servicios == 1 and $instalacion->ver_servicios_admin == 1)
                 <div class="card shadow-box mb-4">
                     <div class="card-header bg-white font-bold" style="font-weight: bold;padding: 12px;font-size: 18px;">
                         Servicios</div>
@@ -1622,9 +1627,11 @@
                                 <li>No hay servicios disponibles</li>
                             @else
                                 @foreach (unserialize($instalacion->servicios) as $item)
+                                @if(\App\Models\Servicios_adicionales::find($item))
                                     <li><img src="/img/servicios/{{ $item }}.png" width="12" height="12"
                                             class="mr-2"> {{ \App\Models\Servicios_adicionales::find($item)->nombre }}
                                     </li>
+                                @endif
                                 @endforeach
                             @endif
                         </ul>

@@ -68,7 +68,7 @@
                                         </div>
                                     </div>
                                     <input type="hidden" name="html_normas" class="html_normas">
-                                @elseif(request()->tipo == 'politica_html')
+                                @elseif(request()->tipo == 'politica')
                                     <div class="form-group">
                                         <div class="quill-wrapper">
                                             <div id="quill">
@@ -76,7 +76,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <input type="hidden" name="politica_html" class="html_normas">
+                                    <input type="hidden" name="politica" class="html_normas">
+                                    @elseif(request()->tipo == 'condiciones')
+                                    <div class="form-group">
+                                        <div class="quill-wrapper">
+                                            <div id="quill">
+                                                {!! $instalacion[request()->tipo] ?? '' !!}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="condiciones" class="html_normas">
                                 @elseif(request()->tipo == 'horario')
                                     <div class="col-md-12">
                                         <ul class="list-group group-horario">
@@ -125,27 +134,23 @@
                                         </ul>
                                     </div>
                                 @elseif(request()->tipo == 'servicios')
-                                    @php
-                                        $servicios = \App\Models\Servicio::where('instalacion_id', $instalacion['id'])
-                                            ->get()
-                                            ->toArray();
-                                        $servicios_adicionales = \App\Models\Servicios_adicionales::all()->toArray();
-                                        $aServicios = array_merge($servicios, $servicios_adicionales);
-                                    @endphp
-                                    <div class="border p-2 w-100">
-                                        @foreach ($aServicios as $item)
-                                            <div class="w-100">
-                                                <div class="form-check form-check-inline switch mb-4">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        value="{{ $item['id'] }}" id="servicio{{ $item['id'] }}"
-                                                        name="servicios[]">
-                                                    <label class="form-check-label" for="servicio{{ $item['id'] }}">
-                                                        {{ $item['nombre'] }}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        @endforeach
+                                @php
+                                $servicios_adicionales = \App\Models\Servicios_adicionales::all()->toArray();
+                            @endphp
+                            <div class="border p-2 w-100">
+                                @foreach ($servicios_adicionales as $item)
+                                    <div class="w-100">
+                                        <div class="form-check form-check-inline switch mb-4">
+                                            <input class="form-check-input" type="checkbox"
+                                                value="{{ $item['id'] }}" id="servicio{{ $item['id'] }}"
+                                                name="servicios[]">
+                                            <label class="form-check-label" for="servicio{{ $item['id'] }}">
+                                                {{ $item['nombre'] }}
+                                            </label>
+                                        </div>
                                     </div>
+                                @endforeach
+                            </div>
                                 @elseif(request()->tipo == 'prefijo_pedido')
                                     <input value="{{ $instalacion[request()->tipo] }}" name="{{ request()->tipo }}"
                                         type="text"
@@ -179,6 +184,45 @@
                                                 2
                                             </option>
                                         </select>
+                                    </div>
+
+                                    @elseif(request()->tipo == 'normas_visualizacion')
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">Opciones de visualización para Admin</label>
+                                    
+                                        @foreach ($instalacion as $key => $value)
+                                            @if (Str::startsWith($key, 'ver_') && Str::endsWith($key, '_admin'))
+                                                @php
+                                                    // Obtener el nombre del "superior" eliminando "_admin" del final
+                                                    $superiorKey = Str::replaceLast('_admin', '', $key);
+                                                @endphp
+                                    
+                                                @if (isset($instalacion[$superiorKey]) && $instalacion[$superiorKey] == 1)
+                                                    <div class="mb-2">
+                                                        <label class="form-label">{{ ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}</label>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="{{ $key }}"
+                                                                id="{{ $key }}_si" value="1"
+                                                                {{ old($key, $value) == 1 ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="{{ $key }}_si">Sí</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="{{ $key }}"
+                                                                id="{{ $key }}_no" value="0"
+                                                                {{ old($key, $value) == 0 ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="{{ $key }}_no">No</label>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="mb-2">
+                                                        <label class="form-label">{{ ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}</label>
+                                                        <p class="text-danger">
+                                                            La visualización de {{ str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key)) }} está desactivada. Pide al superadmin que lo active.
+                                                        </p>
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     </div>
                                 @else
                                     <input value="{{ $instalacion[request()->tipo] }}" name="{{ request()->tipo }}"

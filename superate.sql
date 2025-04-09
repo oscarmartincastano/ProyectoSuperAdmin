@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-03-2025 a las 08:30:21
+-- Tiempo de generación: 09-04-2025 a las 11:02:33
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -16,6 +16,12 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de datos: `superate`
+--
+
+-- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `acceso`
@@ -35,28 +41,33 @@ CREATE TABLE `acceso` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 -- --------------------------------------------------------
 
--- 
--- Estructura de tabla para la tabla `acceso_puerta`
 --
+-- Estructura de tabla para la tabla `accesos_puerta`
+--
+
 CREATE TABLE `accesos_puerta` (
   `id` int(11) NOT NULL,
   `estado` varchar(125) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL DEFAULT 'cerrar',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `accion`
 --
+
 CREATE TABLE `accion` (
   `id` int(11) NOT NULL,
   `mensaje` varchar(255) NOT NULL,
   `cod_error` int(20) NOT NULL,
   `tipo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -210,6 +221,13 @@ CREATE TABLE `deportes` (
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `deportes`
+--
+
+INSERT INTO `deportes` (`id`, `nombre`, `created_at`, `updated_at`) VALUES
+(14, 'Gimnasio', '2025-04-02 09:27:16', '2025-04-02 09:27:16');
+
 -- --------------------------------------------------------
 
 --
@@ -270,7 +288,6 @@ CREATE TABLE `dias_festivos` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
 
 -- --------------------------------------------------------
 
@@ -419,6 +436,13 @@ CREATE TABLE `instalaciones` (
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `instalaciones`
+--
+
+INSERT INTO `instalaciones` (`id`, `nombre`, `direccion`, `tlfno`, `html_normas`, `servicios`, `horario`, `slug`, `tipo_reservas_id`, `finalidad_eventos`, `prefijo_pedido`, `politica`, `politica_html`, `terminos`, `terminos_html`, `condiciones`, `condiciones_html`, `ver_normas`, `ver_servicios`, `ver_horario`, `ver_politica`, `ver_condiciones`, `ver_mapa`, `ver_deportes`, `ver_normas_admin`, `ver_servicios_admin`, `ver_horario_admin`, `ver_politica_admin`, `ver_condiciones_admin`, `ver_mapa_admin`, `ver_deportes_admin`, `created_at`, `updated_at`) VALUES
+(3, 'Superate Sports', 'C. Isla Hierro, 14011 Córdoba', '123123123', '<p>Prueba</p>', NULL, 'a:7:{s:5:\"lunes\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";s:5:\"14:17\";s:4:\"hfin\";s:5:\"19:18\";}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}s:6:\"martes\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}s:10:\"miércoles\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}s:6:\"jueves\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}s:7:\"viernes\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}s:7:\"sábado\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}s:7:\"domingo\";a:1:{s:9:\"intervalo\";a:2:{i:0;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}i:1;a:2:{s:7:\"hinicio\";N;s:4:\"hfin\";N;}}}}', 'superate', 1, 'servicios', 'supe', '<p>Prueba</p>', '<p>Prueba</p>', NULL, NULL, '<p>Prueba</p>', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, '2025-04-02 09:23:09', '2025-04-09 11:01:37');
+
 -- --------------------------------------------------------
 
 --
@@ -553,6 +577,26 @@ CREATE TABLE `pedidos` (
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `amount`, `id_usuario`, `id_reserva`, `id_evento`, `id_servicio`, `id_bono`, `fecha`, `estado`, `checked`, `tipo_pago`, `expiration`, `created_at`, `updated_at`, `deleted_at`) VALUES
+('11cdbc', 0, 3120, 828, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:40:17', '2025-04-02 13:40:17', NULL),
+('15RVtn', 0, 3120, 833, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 14:13:07', '2025-04-02 14:13:07', NULL),
+('23JhwM', 0, 3120, 834, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-03 13:52:12', '2025-04-03 13:52:12', NULL),
+('39uXmk', 0, 3120, 829, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:42:03', '2025-04-02 13:42:03', NULL),
+('42veRz', 0, 3120, 823, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 12:56:53', '2025-04-02 12:56:53', NULL),
+('48x5s7', 0, 3120, 825, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:19:37', '2025-04-02 13:19:37', NULL),
+('54a9wd', 0, 3120, 835, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-07 14:40:14', '2025-04-07 14:40:15', NULL),
+('59QY11', 0, 3120, 837, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-08 12:37:35', '2025-04-08 12:37:35', NULL),
+('64mYFi', 0, 3120, 827, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:38:31', '2025-04-02 13:38:31', NULL),
+('76ZJ0w', 0, 3120, 826, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:30:16', '2025-04-02 13:30:16', NULL),
+('85qcEY', 0, 3120, 836, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-07 14:45:00', '2025-04-07 14:45:00', NULL),
+('91dq2d', 0, 3120, 838, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-08 12:38:04', '2025-04-08 12:38:04', NULL),
+('91l2rt', 0, 3120, 832, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:54:34', '2025-04-02 13:54:34', NULL),
+('974UwS', 0, 3120, 824, NULL, NULL, NULL, NULL, 'pagado', NULL, 'tarjeta', NULL, '2025-04-02 13:17:58', '2025-04-02 13:17:58', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -596,6 +640,15 @@ CREATE TABLE `pistas` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `pistas`
+--
+
+INSERT INTO `pistas` (`id`, `id_instalacion`, `nombre`, `nombre_corto`, `tipo`, `id_deporte`, `horario`, `precio`, `reservas_por_tramo`, `allow_cancel`, `atenlacion_reserva`, `allow_more_res`, `max_dias_antelacion`, `active`, `bloqueo`, `created_at`, `updated_at`) VALUES
+(9, 3, 'Sala 1', NULL, 'Gimnasio', 14, 'a:2:{i:0;a:2:{s:4:\"dias\";a:6:{i:0;s:1:\"1\";i:1;s:1:\"2\";i:2;s:1:\"4\";i:3;s:1:\"5\";i:4;s:1:\"6\";i:5;s:1:\"7\";}s:9:\"intervalo\";a:1:{i:0;a:3:{s:7:\"hinicio\";s:5:\"07:00\";s:4:\"hfin\";s:5:\"22:00\";s:9:\"secuencia\";s:2:\"60\";}}}i:1;a:2:{s:4:\"dias\";a:1:{i:0;s:1:\"3\";}s:9:\"intervalo\";a:1:{i:0;a:3:{s:7:\"hinicio\";s:5:\"10:00\";s:4:\"hfin\";s:5:\"15:00\";s:9:\"secuencia\";s:2:\"15\";}}}}', 0, 1, 0, 5, 0, 10, 1, NULL, '2025-04-02 09:25:46', '2025-04-02 09:25:46'),
+(10, 3, 'Sala 2', NULL, 'Gimnasio', 14, 'a:2:{i:0;a:2:{s:4:\"dias\";a:6:{i:0;s:1:\"1\";i:1;s:1:\"2\";i:2;s:1:\"4\";i:3;s:1:\"5\";i:4;s:1:\"6\";i:5;s:1:\"7\";}s:9:\"intervalo\";a:1:{i:0;a:3:{s:7:\"hinicio\";s:5:\"07:00\";s:4:\"hfin\";s:5:\"22:00\";s:9:\"secuencia\";s:2:\"60\";}}}i:1;a:2:{s:4:\"dias\";a:1:{i:0;s:1:\"3\";}s:9:\"intervalo\";a:1:{i:0;a:3:{s:7:\"hinicio\";s:5:\"15:00\";s:4:\"hfin\";s:5:\"19:00\";s:9:\"secuencia\";s:2:\"60\";}}}}', 0, 1, 0, 5, 0, 10, 1, NULL, '2025-04-02 09:25:46', '2025-04-02 09:25:46'),
+(11, 3, 'Sala 3', NULL, 'Gimansio', 14, 'a:1:{i:0;a:2:{s:4:\"dias\";a:7:{i:0;s:1:\"1\";i:1;s:1:\"2\";i:2;s:1:\"3\";i:3;s:1:\"4\";i:4;s:1:\"5\";i:5;s:1:\"6\";i:6;s:1:\"7\";}s:9:\"intervalo\";a:1:{i:0;a:3:{s:7:\"hinicio\";s:5:\"07:00\";s:4:\"hfin\";s:5:\"22:00\";s:9:\"secuencia\";s:2:\"60\";}}}}', 0, 1, 0, 5, 0, 10, 1, NULL, '2025-04-02 09:25:46', '2025-04-02 09:25:46');
 
 -- --------------------------------------------------------
 
@@ -698,6 +751,13 @@ CREATE TABLE `reservas` (
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `reservas`
+--
+
+INSERT INTO `reservas` (`id`, `id_pista`, `id_usuario`, `timestamp`, `horarios`, `fecha`, `hora`, `tarifa`, `minutos_totales`, `estado`, `estado_asistencia`, `tipo`, `observaciones`, `observaciones_admin`, `reserva_periodica`, `reserva_multiple`, `id_pedido`, `aprobado`, `creado_por`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(832, 9, 3120, 1743613200, 'a:1:{i:0;i:1743613200;}', '2025-04-02', '1900', 1, 60, 'canceled', NULL, NULL, NULL, NULL, NULL, NULL, '91l2rt', 0, 'user', '2025-04-02 13:54:34', '2025-04-08 09:03:22', '2025-04-08 09:03:22');
+
 -- --------------------------------------------------------
 
 --
@@ -739,6 +799,13 @@ CREATE TABLE `servicios` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `servicios`
+--
+
+INSERT INTO `servicios` (`id`, `nombre`, `descripcion`, `tipo`, `duracion`, `precio`, `reservas`, `tipo_espacio`, `pista_id`, `id_tipo_participante`, `instalacion_id`, `formapago`, `created_at`, `updated_at`) VALUES
+(15, 'Piscina', '<p><br></p>', 'suscripcion', 'diario', 0.00, 'Si', '14', NULL, NULL, 3, 'recurrente', '2025-04-08 11:13:54', '2025-04-08 11:13:54');
 
 -- --------------------------------------------------------
 
@@ -851,6 +918,13 @@ CREATE TABLE `users` (
   `updated_at` datetime DEFAULT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `users`
+--
+
+INSERT INTO `users` (`id`, `id_instalacion`, `name`, `apellidos`, `email`, `tlfno`, `movil`, `direccion`, `codigo_postal`, `email_verified_at`, `password`, `cuota`, `date_birth`, `rol`, `subrol`, `max_reservas_tipo_espacio`, `remember_token`, `varios`, `token_redsys`, `aprobado`, `pago_recurrente`, `codigo_tarjeta`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(3120, 3, 'Oscar', NULL, 'oscarmartin@tallerempresarial.es', NULL, NULL, 'c/Arcos', NULL, NULL, '$2y$10$kV2xdJwVkFF25j0eqW..xuxc.6GwEGg96aH3ibnIOzghc7c4oz2..', NULL, NULL, 'admin', 'admin', NULL, NULL, NULL, NULL, '2025-04-02 11:00:56', 'off', NULL, '2025-04-02 11:00:56', '2025-04-02 11:00:56', NULL);
 
 -- --------------------------------------------------------
 
@@ -1225,7 +1299,7 @@ ALTER TABLE `configuracion_ip`
 -- AUTO_INCREMENT de la tabla `deportes`
 --
 ALTER TABLE `deportes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `desactivaciones_periodicas`
@@ -1285,7 +1359,7 @@ ALTER TABLE `horarios`
 -- AUTO_INCREMENT de la tabla `instalaciones`
 --
 ALTER TABLE `instalaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `log_recibos_diario`
@@ -1333,7 +1407,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT de la tabla `pistas`
 --
 ALTER TABLE `pistas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `pistas_campos`
@@ -1363,7 +1437,7 @@ ALTER TABLE `registro`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=816;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=839;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas_periodicas`
@@ -1375,7 +1449,7 @@ ALTER TABLE `reservas_periodicas`
 -- AUTO_INCREMENT de la tabla `servicios`
 --
 ALTER TABLE `servicios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `servicios_adicionales`
@@ -1411,7 +1485,7 @@ ALTER TABLE `tipo_reservas`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3120;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3122;
 
 --
 -- AUTO_INCREMENT de la tabla `valor_campo_personalizado`

@@ -143,19 +143,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Campo: Política -->
-                            <div class="col-md-12 mb-3">
-                                <label for="politica_{{ $instalacion->id }}" class="form-label">Política</label>
-                                <textarea class="form-control @error('politica_' . $instalacion->id) is-invalid @enderror"
-                                    name="politica_{{ $instalacion->id }}" id="politica_{{ $instalacion->id }}" rows="6"
-                                    placeholder="Política">{{ old('politica_' . $instalacion->id, $instalacion->politica) }}</textarea>
-                                @error('politica_' . $instalacion->id)
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-
                             {{-- <!-- Campo: Condiciones -->
                             <div class="col-md-12 mb-3">
                                 <label for="condiciones_{{ $instalacion->id }}" class="form-label">Condiciones</label>
@@ -172,10 +159,10 @@
                             <!-- Botones de radio para opciones de visualización -->
                             <div class="col-md-12 mb-3">
                                 <label class="form-label">Opciones de visualización</label>
-
+                            
                                 @foreach ($aDatos['instalaciones_visualizacion'] as $instalacion)
                                     @foreach ($instalacion as $key => $value)
-                                        @if (Str::startsWith($key, 'ver_'))
+                                        @if (Str::startsWith($key, 'ver_') && !Str::endsWith($key, '_admin'))
                                             <div class="mb-2">
                                                 <label class="form-label">{{ ucfirst(str_replace('_', ' ', str_replace('ver_', '', $key))) }}</label>
                                                 <div class="form-check">
@@ -244,12 +231,6 @@
                             <label for="slug" class="form-label">Slug</label>
                             <input type="text" class="form-control" id="slug" name="slug"
                                 value="{{ old('slug') }}" placeholder="Slug">
-                        </div>
-
-                        <!-- Campo: Política -->
-                        <div class="col-md-6 mb-3">
-                            <label for="politica" class="form-label">Política</label>
-                            <textarea class="form-control" name="politica" id="politica" rows="6" placeholder="Política">{{ old('politica') }}</textarea>
                         </div>
 
                     </div>

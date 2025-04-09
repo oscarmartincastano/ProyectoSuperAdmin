@@ -86,7 +86,11 @@
                                     <td>
                                         @if ($instalacion->servicios && $instalacion->servicios != null && $instalacion->servicios != '[]')
                                             @foreach (unserialize($instalacion->servicios) as $item)
-                                                {{ \App\Models\Servicios_adicionales::find($item)->nombre }},
+                                                @if(\App\Models\Servicios_adicionales::find($item))
+                                                    {{ \App\Models\Servicios_adicionales::find($item)->nombre }},
+                                                @else
+                                                    {{ \App\Models\Servicio::find($item)->nombre }},
+                                                @endif
                                             @endforeach
                                         @endif
                                     </td>
@@ -134,10 +138,22 @@
                                 @if($instalacion->ver_politica==true)
                                 <tr>
                                     <th>Html política de privacidad</th>
-                                    <td>{{ $instalacion->politica_html }}</td>
-                                    <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/politica_html" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                                    <td>{{ $instalacion->politica }}</td>
+                                    <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/politica" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
                                 @endif
+                                @if($instalacion->ver_condiciones==true)
+                                <tr>
+                                    <th>Html condiciones</th>
+                                    <td>{{ $instalacion->condiciones }}</td>
+                                    <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/condiciones" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <th>Normas de visualización</th>
+                                    <td>Visualización</td>
+                                    <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/normas_visualizacion" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
+                                </tr>
                                 <tr>
                                     <th>Prefijo pedido</th>
                                     <td>{{ $instalacion->prefijo_pedido  }}-########</td>

@@ -35,6 +35,13 @@ class Instalacion extends Model
         'terminos_html',
         'condiciones',
         'condiciones_html',
+        'ver_normas_admin',
+        'ver_servicios_admin',
+        'ver_horario_admin',
+        'ver_politica_admin',
+        'ver_condiciones_admin',
+        'ver_mapa_admin',
+        'ver_deportes_admin',
     ];
 
     protected $appends = ['deportes', 'user_admin', 'users_sin_validar'];
