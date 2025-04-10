@@ -54,10 +54,15 @@
                                 <label class="col-md-2 control-label">Reservas máximas para cada tipo de espacio</label>
                                 <div class="col-md-10 border p-3">
                                     @foreach (collect($instalacion->deportes)->unique() as $tipo_espacio)
-                                    <label for="max_reservas_tipo_espacio[{{ $tipo_espacio }}]">{{ $tipo_espacio }}</label>
-                                    <input type="number" class="form-control" name="max_reservas_tipo_espacio[{{ $tipo_espacio }}]" id="max_reservas_tipo_espacio[{{ $tipo_espacio }}]"
-                                        value="{{ unserialize($user?->max_reservas_tipo_espacio ?? '')[$tipo_espacio] ?? (unserialize($instalacion->configuracion?->max_reservas_tipo_espacio ?? '')[$tipo_espacio] ?? '') }}">
-                                @endforeach
+                                        <label for="max_reservas_tipo_espacio[{{ $tipo_espacio }}]">{{ $tipo_espacio }}</label>
+                                        <input type="number" class="form-control" name="max_reservas_tipo_espacio[{{ $tipo_espacio }}]" id="max_reservas_tipo_espacio[{{ $tipo_espacio }}]"
+                                            value="{{ 
+                                                is_string($user?->max_reservas_tipo_espacio) && !empty($user?->max_reservas_tipo_espacio) && @unserialize($user?->max_reservas_tipo_espacio) !== false
+                                                    ? (unserialize($user?->max_reservas_tipo_espacio)[$tipo_espacio] ?? 
+                                                        (unserialize($instalacion->configuracion?->max_reservas_tipo_espacio ?? '')[$tipo_espacio] ?? '')) 
+                                                    : '' 
+                                            }}">
+                                    @endforeach
                                 </div>
                             </div>
                             <input type="hidden" name="id_instalacion" value="{{ $instalacion->id }}">

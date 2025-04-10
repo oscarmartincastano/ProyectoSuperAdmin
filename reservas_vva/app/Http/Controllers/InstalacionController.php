@@ -1370,7 +1370,12 @@ class InstalacionController extends Controller
             $data['max_reservas_tipo_espacio'] = serialize($request->max_reservas_tipo_espacio);
         }
 
-        Configuracion::find($instalacion->configuracion->id)->update($data);
+        if ($instalacion->configuracion) {
+            Configuracion::find($instalacion->configuracion->id)->update($data);
+        } else {
+            // Crear un nuevo registro si no existe
+            Configuracion::create(array_merge($data, ['id_instalacion' => $instalacion->id]));
+        }
         return redirect()->back();
     }
 
