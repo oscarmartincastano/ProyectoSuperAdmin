@@ -168,59 +168,6 @@ class RedsysController extends Controller
                 'estado'=>'pendiente'
             ]);
 
-            $email = auth()->user()->email;
-
-        config([
-            'database.connections.dynamic' => [
-                'driver' => env('DB_RESERVAS_CONNECTION', 'mysql'),
-                'host' => env('DB_RESERVAS_HOST', '127.0.0.1'),
-                'port' => env('DB_RESERVAS_PORT', '3306'),
-                'database' => env('DB_RESERVAS_DATABASE'),
-                'username' => env('DB_RESERVAS_USERNAME', 'forge'),
-                'password' => env('DB_RESERVAS_PASSWORD', ''),
-                'charset' => 'utf8mb4',
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix' => '',
-                'strict' => true,
-                'engine' => null,
-            ],
-        ]);
-
-
-        $existingUser = DB::connection('dynamic')
-    ->table('users')
-    ->where('email', $email)
-    ->first();
-
-    $name = Instalacion::where('slug', $request->slug_instalacion)->first()->nombre;
-    $existinginstalacion = DB::connection('dynamic')
-    ->table('instalaciones')
-    ->where('nombre', $name)
-    ->first();
-
-    $existingPista = DB::connection('dynamic')
-    ->table('pistas')
-    ->where('nombre', $pista->nombre)
-    ->where('id_instalacion', $existinginstalacion->id)
-    ->first();
-
-    // Crear la reserva en la base de datos dinámica
-    $reserva_app_reservar = DB::connection('dynamic')->table('reservas')->insert([
-        'id_pista' => $existingPista->id,
-        'id_usuario' => $existingUser->id,
-        'timestamp' => $request->timestamp,
-            'horarios' => serialize($timestamps),
-            'fecha' => date('Y/m/d', $request->timestamp),
-            'hora' => date('Hi', $request->timestamp),
-            'tarifa' => $request->tarifa,
-            'minutos_totales' => $minutos_totales,
-            'estado' => 'active',
-            'observaciones' => $request->observaciones ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-    ]);
-
-
             array_push($reservas_ids, $reserva->id);
 
             if (isset($request->observaciones)) {

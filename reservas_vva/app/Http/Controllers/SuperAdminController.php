@@ -600,10 +600,47 @@ public function deleteUser($id, $userId)
     // Configurar la conexión dinámica
     $dinamicConnection = $this->configureDynamicConnection($ayuntamiento->bd_nombre);
 
-    // Eliminar el usuario
-    $dinamicConnection->table('users')->where('id', $userId)->delete();
+    try {
+        // Obtener los id_participante relacionados con el id_usuario
+        $idParticipantes = $dinamicConnection->table('participantes')
+            ->where('id_usuario', $userId)
+            ->pluck('id');
 
-    return redirect()->route('superadmin.editUsers', $id)->with('success', 'Usuario eliminado con éxito.');
+        // Tablas que usan id_participante
+        $tablesWithIdParticipante = [
+            'bono_participante',
+            'participante_eventos_mes',
+        ];
+
+        foreach ($tablesWithIdParticipante as $table) {
+            if ($dinamicConnection->getSchemaBuilder()->hasTable($table)) {
+                $dinamicConnection->table($table)->whereIn('id_participante', $idParticipantes)->delete();
+            }
+        }
+
+        // Tablas que usan id_usuario
+        $tablesWithIdUsuario = [
+            'servicio_usuario',
+            'reservas',
+            'recibo',
+            'pedidos',
+            'participantes',
+            'bono_usuario',
+        ];
+
+        foreach ($tablesWithIdUsuario as $table) {
+            if ($dinamicConnection->getSchemaBuilder()->hasTable($table)) {
+                $dinamicConnection->table($table)->where('id_usuario', $userId)->delete();
+            }
+        }
+
+        // Eliminar el usuario de la tabla principal
+        $dinamicConnection->table('users')->where('id', $userId)->delete();
+
+        return redirect()->route('superadmin.editUsers', $id)->with('success', 'Usuario eliminado con éxito.');
+    } catch (\Exception $e) {
+        return redirect()->route('superadmin.editUsers', $id)->with('error', 'Error al eliminar el usuario: ' . $e->getMessage());
+    }
 }
 
 public function editUsers(Request $request, $id)

@@ -141,22 +141,24 @@ class UserController extends Controller
             }
 
         $servicios_contratados = Servicio_Usuario::where('id_usuario', $user->id)
-        ->whereDate('fecha_expiracion', '>=', \Carbon\Carbon::now()->format('Y-m-d'))
+        ->whereDate('fecha_expiracion', '>=', \Carbon\Carbon::now()->format('Y-m-d'))->where('activo', 'si')
         ->pluck('id_servicio')
         ->toArray();
 
         $servicios_no_contratados = array_intersect($servicios_disponibles,$servicios_contratados);
 
-
         if (!$pista->check_reserva_valida($request->timestamp)) {
+            dd($request->timestamp);
             return view('pista.reservanodisponible');
         }
         if (!$user->check_maximo_reservas_espacio($pista->tipo)) {
             $max_reservas = true;
+            dd($max_reservas);
             return view('pista.reservanodisponible', compact('max_reservas'));
         }
         if (!$user->aprobado) {
             $user_no_valid = true;
+            dd($user_no_valid);
             return view('pista.reservanodisponible', compact('user_no_valid'));
         }
 

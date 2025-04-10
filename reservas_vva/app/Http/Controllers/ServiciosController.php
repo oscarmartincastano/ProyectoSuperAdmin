@@ -190,7 +190,6 @@ class ServiciosController extends Controller
     public function contratar_de_nuevo(){
         $servicio = Servicio::find(request()->servicio);
 
-
         return view ('servicio.nuevo_reserva')->with(compact('servicio'));
 
     }
