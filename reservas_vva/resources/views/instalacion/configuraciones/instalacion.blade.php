@@ -80,7 +80,7 @@
                                 @php
                                 // dd($instalacion->servicios);
                                 @endphp
-                                @if($instalacion->ver_servicios==true)
+                                @if($instalacion->permisos->ver_servicios==true)
                                 <tr>
                                     <th>Servicios</th>
                                     <td>
@@ -128,21 +128,21 @@
                                     <td>{{ $instalacion->tlfno }}</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/tlfno" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
-                                @if($instalacion->ver_normas==true)
+                                @if($instalacion->permisos->ver_normas==true)
                                 <tr>
                                     <th>Html normas</th>
                                     <td>{{ $instalacion->html_normas }}</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/html_normas" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
                                 @endif
-                                @if($instalacion->ver_politica==true)
+                                @if($instalacion->permisos->ver_politica==true)
                                 <tr>
                                     <th>Html política de privacidad</th>
                                     <td>{{ $instalacion->politica }}</td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/politica" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
                                 @endif
-                                @if($instalacion->ver_condiciones==true)
+                                @if($instalacion->permisos->ver_condiciones==true)
                                 <tr>
                                     <th>Html condiciones</th>
                                     <td>{{ $instalacion->condiciones }}</td>

@@ -1,3 +1,15 @@
+@php
+$slug = request()->slug_instalacion;
+$registro = DB::connection('superadmin')->table('superadmin')->where('url','https://gestioninstalacion.es/'.$slug)->first();
+
+$tipoCalendario = $registro->tipo_calendario;
+
+if((str_contains(request()->url(),'reservas') || str_contains(request()->url(),'eventos')) && $tipoCalendario == 0){
+    header("Location: /$slug");
+    exit();
+}
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -928,22 +940,27 @@
                     @php
                         $pendientePago = check_pendientePago(auth()->user()->id);
                     @endphp
-                        @if (auth()->user()->rol != 'admin' and request()->slug_instalacion != 'feria-jamon-villanuevadecordoba')
+                        @if (auth()->user()->rol != 'admin' and request()->slug_instalacion != 'feria-jamon-villanuevadecordoba' )
+                            @if($tipoCalendario != 0)
                             <a href="/{{ request()->slug_instalacion }}/mis-reservas" class="px-3 {{request()->is(request()->slug_instalacion . '/mis-reservas') ? 'active' : '' }}"><i class="fas fa-book-open mr-2"></i>
                                 @if ($instalacion->finalidad_eventos == FINALIDAD_ENTRADA)
                                 Mis eventos
                                 @else
                                 Mis reservas    
                                 @endif
-                                
+                            @endif     
                                 @if($pendientePago > 0)<span class="ml-2 badge rounded-pill bg-warning">{!! $pendientePago !!}</span>@endif</a>
                             <a href="/{{ request()->slug_instalacion }}/perfil" class="px-3"><i class="fas fa-user mr-2"></i> Mi perfil </a>
+    
                         @elseif(auth()->user()->rol != 'admin' and request()->slug_instalacion == 'feria-jamon-villanuevadecordoba')
+                        @if($tipoCalendario != 0)
                         <a href="/{{ request()->slug_instalacion }}/new/mis-eventos" class="px-3 {{request()->is(request()->slug_instalacion . '/new/mis-eventos') ? 'active' : '' }}"><i class="fas fa-book-open mr-2"></i>
                             @if ($instalacion->finalidad_eventos == FINALIDAD_ENTRADA)
                             Mis eventos
                             @else
-                            Mis reservas    
+                            
+                            Mis reservas 
+                            @endif   
                             @endif
                             
                             @if($pendientePago > 0)<span class="ml-2 badge rounded-pill bg-warning">{!! $pendientePago !!}</span>@endif</a>

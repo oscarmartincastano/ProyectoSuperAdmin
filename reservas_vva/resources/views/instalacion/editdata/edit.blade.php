@@ -177,10 +177,12 @@
                                         <br>
                                         <label for="tipo_calendario">Seleccionar </label>
                                         <select name="tipo_calendario" id="tipo_calendario" class="form-control">
-                                            <option value="0" {{ $tipoCalendario == 0 ? 'selected' : '' }}>Calendario
-                                                1
+                                            <option value="0" {{ $tipoCalendario == 0 ? 'selected' : '' }}>Sin calendario
                                             </option>
                                             <option value="1" {{ $tipoCalendario == 1 ? 'selected' : '' }}>Calendario
+                                                1
+                                            </option>
+                                            <option value="2" {{ $tipoCalendario == 2 ? 'selected' : '' }}>Calendario
                                                 2
                                             </option>
                                         </select>
@@ -190,39 +192,47 @@
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">Opciones de visualización para Admin</label>
                                     
-                                        @foreach ($instalacion as $key => $value)
-                                            @if (Str::startsWith($key, 'ver_') && Str::endsWith($key, '_admin'))
-                                                @php
-                                                    // Obtener el nombre del "superior" eliminando "_admin" del final
-                                                    $superiorKey = Str::replaceLast('_admin', '', $key);
-                                                @endphp
+                                        @php
+                                            $permiso = $permisos->first(); // Acceder al primer elemento de la colección
+                                        @endphp
                                     
-                                                @if (isset($instalacion[$superiorKey]) && $instalacion[$superiorKey] == 1)
-                                                    <div class="mb-2">
-                                                        <label class="form-label">{{ ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}</label>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="{{ $key }}"
-                                                                id="{{ $key }}_si" value="1"
-                                                                {{ old($key, $value) == 1 ? 'checked' : '' }}>
-                                                            <label class="form-check-label" for="{{ $key }}_si">Sí</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="{{ $key }}"
-                                                                id="{{ $key }}_no" value="0"
-                                                                {{ old($key, $value) == 0 ? 'checked' : '' }}>
-                                                            <label class="form-check-label" for="{{ $key }}_no">No</label>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="mb-2">
-                                                        <label class="form-label">{{ ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}</label>
-                                                        <p class="text-danger">
-                                                            La visualización de {{ str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key)) }} está desactivada. Pide al superadmin que lo active.
-                                                        </p>
-                                                    </div>
-                                                @endif
-                                            @endif
-                                        @endforeach
+                                    @foreach ($permiso as $key => $value)
+                                    @if (Str::startsWith($key, 'ver_') && Str::endsWith($key, '_admin'))
+                                        @php
+                                            // Obtener el nombre del "superior" eliminando "_admin" del final
+                                            $superiorKey = Str::replaceLast('_admin', '', $key);
+                                        @endphp
+                                
+                                        @if (isset($permiso->$superiorKey) && $permiso->$superiorKey == 1)
+                                            <div class="mb-2">
+                                                <label class="form-label">
+                                                    {{ $key == 'ver_serviciosadicionales_admin' ? 'Servicios adicionales' : ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}
+                                                </label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="permisos[{{ $key }}]"
+                                                        id="{{ $key }}_si" value="1"
+                                                        {{ old("permisos.$key", $value) == 1 ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="{{ $key }}_si">Sí</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="permisos[{{ $key }}]"
+                                                        id="{{ $key }}_no" value="0"
+                                                        {{ old("permisos.$key", $value) == 0 ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="{{ $key }}_no">No</label>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="mb-2">
+                                                <label class="form-label">
+                                                    {{ $key == 'ver_serviciosadicionales_admin' ? 'Servicios adicionales' : ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}
+                                                </label>
+                                                <p class="text-danger">
+                                                    La visualización de {{ str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key)) }} está desactivada. Pide al superadmin que lo active.
+                                                </p>
+                                            </div>
+                                        @endif
+                                    @endif
+                                @endforeach
                                     </div>
                                 @else
                                     <input value="{{ $instalacion[request()->tipo] }}" name="{{ request()->tipo }}"

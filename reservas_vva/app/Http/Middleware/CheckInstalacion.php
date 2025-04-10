@@ -37,6 +37,7 @@ class CheckInstalacion
             return $this->setDatabaseConnection($superAdmin->bd_nombre, $next, $request);
         }
 
+        dd("Da error");
         // Si no se encuentra la instalación en la base de datos superadmin
         abort(404, 'No se encontró la instalación en la base de datos.');
     }

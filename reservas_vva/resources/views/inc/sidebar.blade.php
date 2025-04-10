@@ -242,7 +242,7 @@
                   <a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion">Instalación</a>
                   <span class="icon-thumbnail">in</span>
                 </li>
-                @if(auth()->user()->instalacion->ver_servicios == 1)
+                @if(auth()->user()->instalacion->permisos->ver_servicios == 1)
                   <li class="{{ request()->is(request()->slug_instalacion . '/admin/configuracion/servicios') ? 'active' : '' }}">
                       <a href="/{{ request()->slug_instalacion }}/admin/configuracion/servicios">Servicios</a>
                       <span class="icon-thumbnail">se</span>

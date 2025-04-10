@@ -25,6 +25,9 @@
                     <td>
                         <a href="{{ $ayuntamiento->url }}" class="btn btn-primary">Ver Online</a>
                         <a href="{{ route('superadmin.edit', $ayuntamiento->id) }}" class="btn btn-warning">Editar</a>
+                        <a href="{{ route('superadmin.editUsers', $ayuntamiento->id) }}" class="btn btn-info">
+                            <i class="fas fa-users"></i> Editar Usuarios
+                        </a>
                         <form id="delete-form-{{ $ayuntamiento->id }}" action="{{ route('superadmin.destroy', $ayuntamiento->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')

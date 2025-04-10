@@ -401,20 +401,6 @@ CREATE TABLE `instalaciones` (
   `terminos_html` varchar(255) DEFAULT NULL,
   `condiciones` longtext DEFAULT NULL,
   `condiciones_html` varchar(255) DEFAULT NULL,
-  `ver_normas` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_servicios` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_horario` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_politica` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_condiciones` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_mapa` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_deportes` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_normas_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_servicios_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_horario_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_politica_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_condiciones_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_mapa_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_deportes_admin` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -553,6 +539,30 @@ CREATE TABLE `pedidos` (
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `permisos`
+--
+
+CREATE TABLE `permisos` (
+  `id` int(11) NOT NULL,
+  `id_instalacion` int(11) NOT NULL,
+  `ver_normas` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_servicios` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_horario` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_politica` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_condiciones` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_mapa` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_deportes` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_normas_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_servicios_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_horario_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_politica_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_condiciones_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_mapa_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_deportes_admin` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- --------------------------------------------------------
 
 --
@@ -1052,6 +1062,14 @@ ALTER TABLE `password_resets`
 ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`id`);
 
+  --
+-- Indices de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  ADD PRIMARY KEY (`id`);
+
+--
+
 --
 -- Indices de la tabla `personal_access_tokens`
 --
@@ -1328,6 +1346,12 @@ ALTER TABLE `participante_eventos_mes`
 --
 ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `permisos`
+--
+ALTER TABLE `permisos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `pistas`

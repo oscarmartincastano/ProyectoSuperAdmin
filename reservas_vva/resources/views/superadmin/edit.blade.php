@@ -63,13 +63,18 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Seleccionar Calendario</label>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="calendario" id="calendario_1" value="0"
+                        <input class="form-check-input" type="radio" name="calendario" id="calendario_0" value="0"
                             {{ old('calendario', $ayuntamiento->tipo_calendario ?? 0) == 0 ? 'checked' : '' }}>
+                        <label class="form-check-label" for="calendario_0">Sin calendario</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="calendario" id="calendario_1" value="1"
+                            {{ old('calendario', $ayuntamiento->tipo_calendario ?? 0) == 1 ? 'checked' : '' }}>
                         <label class="form-check-label" for="calendario_1">Calendario 1</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="calendario" id="calendario_2" value="1"
-                            {{ old('calendario', $ayuntamiento->tipo_calendario ?? 0) == 1 ? 'checked' : '' }}>
+                        <input class="form-check-input" type="radio" name="calendario" id="calendario_2" value="2"
+                            {{ old('calendario', $ayuntamiento->tipo_calendario ?? 0) == 2 ? 'checked' : '' }}>
                         <label class="form-check-label" for="calendario_2">Calendario 2</label>
                     </div>
                 </div>

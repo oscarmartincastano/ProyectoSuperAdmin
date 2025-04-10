@@ -1,5 +1,15 @@
 @extends('new.layout.base')
+@php
+$slug = request()->slug_instalacion;
+$registro = DB::connection('superadmin')->table('superadmin')->where('url','https://gestioninstalacion.es/'.$slug)->first();
 
+$tipoCalendario = $registro->tipo_calendario;
+
+if((str_contains(request()->url(),'reservas') || str_contains(request()->url(),'eventos')) && $tipoCalendario == 0){
+    header("Location: /$slug");
+    exit();
+}
+@endphp
 @section('style')
 <style>
     .titulo-card {
@@ -44,6 +54,7 @@
     <div class="post-header">
         <div class="menu-header">
             <a href="/{{ request()->slug_instalacion }}/perfil" class="{{ request()->is(request()->slug_instalacion . '/perfil') ? 'active' : '' }}">Mi perfil</a>
+            @if($tipoCalendario != 0)
             @if (request()->slug_instalacion != "villafranca-navidad" and request()->slug_instalacion != "villafranca-actividades" and request()->slug_instalacion != "ciprea24" and request()->slug_instalacion != "eventos-bodega" and request()->slug_instalacion != "la-guijarrosa")
             <a href="/{{ request()->slug_instalacion }}/mis-reservas" class="{{ request()->is(request()->slug_instalacion . '/mis-reservas') ? 'active' : '' }}">Mis reservas</a>
             @endif
@@ -51,6 +62,7 @@
             @if (request()->slug_instalacion != "villafranca-navidad")
             <a href="/{{ request()->slug_instalacion }}/new/mis-servicios" class="{{ request()->is(request()->slug_instalacion . '/new/mi-perfil') ? 'active' : '' }}">Mis servicios</a>
             <a href="/{{ request()->slug_instalacion }}/new/mis-recibos" class="{{ request()->is(request()->slug_instalacion . '/new/mis-recibos') ? 'active' : '' }}">Mis recibos</a>
+            @endif
             @endif
             @if (request()->slug_instalacion == "santaella")
             <a href="/{{ request()->slug_instalacion }}/new/mis-bonos" class="{{ request()->is(request()->slug_instalacion . '/new/mis-bonos') ? 'active' : '' }}">Mis bonos</a>

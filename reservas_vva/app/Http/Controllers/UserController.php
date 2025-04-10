@@ -441,7 +441,6 @@ class UserController extends Controller
 {
     // Obtener el segmento después de "https://gestioninstalacion.es/" en la URL
     $segmento = str_replace('https://gestioninstalacion.es/', '', $request->slug_instalacion);
-
     // Conectar a la base de datos 'superadmin' y buscar el registro que coincida con el segmento
     $registro = DB::connection('superadmin')
         ->table('superadmin')
@@ -475,7 +474,7 @@ class UserController extends Controller
     $servicios = Servicio::all();
     $dias_festivos = Dias_festivos::all(['dia_festivo']);
     $user = Auth::user();
-    if ($tipoCalendario == 0) {
+    if ($tipoCalendario == 1 || $tipoCalendario == 0) {
         // Lógica existente para tipo_calendario = 0
         $suma_hora = 0;
         for ($y = 7; $y < intval(explode(":", date('H:i', strtotime(date('Y-m-d H:i'))))[0]); $y++) {
@@ -497,7 +496,7 @@ class UserController extends Controller
         } else {
             return view('new.index', compact('instalacion', 'pistas', 'block_pista', 'eventos', 'dias_festivos', 'servicios', 'tipoCalendario'));
         }
-    } elseif ($tipoCalendario == 1) {
+    } elseif ($tipoCalendario == 2) {
         // Nueva lógica para tipo_calendario = 1
         $pistas = Pista::where([['id_instalacion', $instalacion->id], ['active', 1]])->get();
         // Determinar la pista seleccionada

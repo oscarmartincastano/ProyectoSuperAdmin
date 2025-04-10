@@ -11,6 +11,7 @@ use App\Mail\CancelarReserva;
 use App\Mail\ReservaAdmin;
 use App\Models\Pista;
 use App\Models\Instalacion;
+use App\Models\Permiso;
 use App\Models\User;
 use App\Models\Cobro;
 use App\Models\Configuracion;
@@ -1089,11 +1090,13 @@ class InstalacionController extends Controller
         // Obtener el campo tipo_calendario
         $tipoCalendario = $registro->tipo_calendario;
     
+        // Obtener los permisos relacionados con la instalación
+        $permisos = DB::table('permisos')->where('id_instalacion', $instalacion->id)->get();
+    
         // Convertir la instalación a un array para la vista
         $instalacion = $instalacion->toArray();
-    
         // Pasar los datos a la vista
-        return view('instalacion.editdata.edit', compact('instalacion', 'tipoCalendario'));
+        return view('instalacion.editdata.edit', compact('instalacion', 'tipoCalendario', 'permisos'));
     }
 
     public function editar_info(Request $request) {
@@ -1170,7 +1173,10 @@ class InstalacionController extends Controller
                 ->table('superadmin')
                 ->where('id', $registro->id)
                 ->update(['tipo_calendario' => $request->tipo_calendario]);
-        } else {
+        }else if($request->permisos){
+           DB::table('permisos')->where('id_instalacion', $instalacion->id)->update($data['permisos']);
+        } 
+        else {
 
             Instalacion::find($instalacion->id)->update($data);
         }
@@ -1548,16 +1554,15 @@ class InstalacionController extends Controller
 
         if (isset($request->max_reservas_tipo_espacio)) {
             $max_reservas_tipo_espacio = $request->max_reservas_tipo_espacio;
-
+        
             foreach ($max_reservas_tipo_espacio as $tipo => $value) {
-                if (
-                    isset(unserialize($user->instalacion->configuracion->max_reservas_tipo_espacio)[$tipo]) &&
-                    unserialize($user->instalacion->configuracion->max_reservas_tipo_espacio)[$tipo] == $value
-                    ) {
+                $configuracionMaxReservas = unserialize($user->instalacion?->configuracion?->max_reservas_tipo_espacio ?? '');
+        
+                if (isset($configuracionMaxReservas[$tipo]) && $configuracionMaxReservas[$tipo] == $value) {
                     unset($max_reservas_tipo_espacio[$tipo]);
                 }
             }
-
+        
             $data['max_reservas_tipo_espacio'] = $max_reservas_tipo_espacio ? serialize($max_reservas_tipo_espacio) : null;
         }
 

@@ -53,11 +53,11 @@
                             <div class="form-group row">
                                 <label class="col-md-2 control-label">Reservas máximas para cada tipo de espacio</label>
                                 <div class="col-md-10 border p-3">
-                                    @foreach ($instalacion->deportes as $tipo_espacio)
-                                        <label for="max_reservas_tipo_espacio[{{ $tipo_espacio }}]">{{ $tipo_espacio }}</label>
-                                        <input type="number" class="form-control" name="max_reservas_tipo_espacio[{{ $tipo_espacio }}]" id="max_reservas_tipo_espacio[{{ $tipo_espacio }}]"
-                                            value="{{ unserialize($user->max_reservas_tipo_espacio)[$tipo_espacio] ?? (unserialize($instalacion->configuracion->max_reservas_tipo_espacio)[$tipo_espacio] ?? '') }}">
-                                    @endforeach
+                                    @foreach (collect($instalacion->deportes)->unique() as $tipo_espacio)
+                                    <label for="max_reservas_tipo_espacio[{{ $tipo_espacio }}]">{{ $tipo_espacio }}</label>
+                                    <input type="number" class="form-control" name="max_reservas_tipo_espacio[{{ $tipo_espacio }}]" id="max_reservas_tipo_espacio[{{ $tipo_espacio }}]"
+                                        value="{{ unserialize($user?->max_reservas_tipo_espacio ?? '')[$tipo_espacio] ?? (unserialize($instalacion->configuracion?->max_reservas_tipo_espacio ?? '')[$tipo_espacio] ?? '') }}">
+                                @endforeach
                                 </div>
                             </div>
                             <input type="hidden" name="id_instalacion" value="{{ $instalacion->id }}">

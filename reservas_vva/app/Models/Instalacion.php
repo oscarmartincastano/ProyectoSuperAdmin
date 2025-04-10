@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Pista;
+use App\Models\Permiso;
 use App\Models\Configuracion;
 use App\Models\Campos_personalizados;
 use App\Models\Cobro;
@@ -35,16 +36,14 @@ class Instalacion extends Model
         'terminos_html',
         'condiciones',
         'condiciones_html',
-        'ver_normas_admin',
-        'ver_servicios_admin',
-        'ver_horario_admin',
-        'ver_politica_admin',
-        'ver_condiciones_admin',
-        'ver_mapa_admin',
-        'ver_deportes_admin',
     ];
 
     protected $appends = ['deportes', 'user_admin', 'users_sin_validar'];
+
+    public function permisos()
+{
+    return $this->hasOne(Permiso::class, 'id_instalacion');
+}
 
     public function users()
     {
