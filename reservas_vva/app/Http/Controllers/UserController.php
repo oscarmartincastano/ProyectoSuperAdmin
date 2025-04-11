@@ -133,7 +133,6 @@ class UserController extends Controller
 
         // Filtrar servicios contratados solo para la pista actual
         $servicios_contratados = Servicio_Usuario::where('id_usuario', $user->id)
-            ->whereIn('id_servicio', $servicios_disponibles)
             ->whereDate('fecha_expiracion', '>=', \Carbon\Carbon::now()->format('Y-m-d'))
             ->where('activo', 'si')
             ->pluck('id_servicio')

@@ -247,7 +247,9 @@
         }
     </style>
 </head>
-
+@php
+                                    // dd($servicios_contratados);
+                                    @endphp
 <body
     style="background:linear-gradient(0deg, rgba(36, 36, 36, 0.5), rgba(36, 36, 36, 0.5))@if (file_exists(public_path() . '/img/deportes/reserva-' . lcfirst($pista->tipo) . '.jpg')) , url(/img/deportes/reserva-{{ lcfirst($pista->tipo) }}.jpg) @endif;
     background-size:cover;background-position:bottom">
