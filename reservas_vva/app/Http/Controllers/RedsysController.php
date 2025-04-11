@@ -88,7 +88,6 @@ class RedsysController extends Controller
     public function pago(Request $request)
     {
 
-
         $pedido_id = self::reserva($request);
         if (!$pedido_id) {
             return redirect()->back()->with('error', 'No se ha completado la reserva porque nos se han seleccionado entradas.');
@@ -97,7 +96,10 @@ class RedsysController extends Controller
         $pista = Pista::find($request->id_pista);
         $amount = $pedido->amount;
         if ($amount == 0) {
-            $pedido->update(['estado' => 'pagado']);
+            $pedido->update([
+                'estado' => 'pagado',
+                'id_reserva' => $request->servicios_contratados,
+            ]);
             Reserva::find($pedido->id_reserva)->update(['estado' => 'active']);
             Reserva::where('id_pedido', $pedido_id)->update(['estado' => 'active']);
             return redirect('/'.$request->slug_instalacion.'/mis-reservas')->with('message', 'Reserva realizada con éxito.');

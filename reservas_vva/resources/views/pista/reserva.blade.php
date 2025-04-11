@@ -258,7 +258,8 @@
                 <a class="navbar-item" href="/{{ request()->slug_instalacion }}" style="padding: 10px">
 
                     @if (file_exists(public_path() . '/img/ceco.png'))
-                        <img src="{{ asset('img/' . request()->slug_instalacion . '.png') }}" style="max-height: 50px" />
+                        <img src="{{ asset('img/' . request()->slug_instalacion . '.png') }}"
+                            style="max-height: 50px" />
                     @else
                         <img src="/img/tallerempresarial.png" style="max-height: 50px" />
                     @endif
@@ -356,6 +357,25 @@
                                             <div>{{ $pista->tipo }}</div>
                                         </div>
                                     </div>
+                                    @if (count($servicios_contratados) > 0)
+                                    <div class="col-sm-9">
+                                    <label class="col-sm-3 col-form-label py-0">Servicios:</label>
+                                        <select class="form-control" name="servicios_contratados"
+                                            id="servicios_contratados">
+                                            <option value="">Seleccionar servicio</option>
+                                            @foreach ($servicios_contratados as $servicio_id)
+                                                @php
+                                                    $servicio = \App\Models\Servicio::find($servicio_id);
+                                                @endphp
+                                                @if ($servicio)
+                                                    <option value="{{ $servicio->id }}">{{ $servicio->nombre }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @endif
+
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label py-0">Espacio:</label>
                                         <div class="col-sm-9">
@@ -436,21 +456,23 @@
                                     @endif
                                     @foreach ($pista->all_campos_personalizados as $item)
                                         @if ($pista->id == 10 && $item->tipo == 'select')
-                                        @foreach (unserialize($item->opciones) as $option)
-                                        <div class="form-group row mb-2">
-                                            <label class="col-sm-3 col-form-label py-0">{{ $option['texto'] }}:</label>
-                                            <div class="col-sm-9">
-                                                <select data-value="{{ $option['texto'] }}"
-                                                    data-precio_extra_opcion="{{ isset($option['pextra']) ? $option['pextra'] : 0 }}"
-                                                    class="form-control"
-                                                    name="campo_adicional[{{ $item->id }}][{{ $option['texto'] }}]">
-                                                    @for ($i = 0; $i <= 10; $i++)
-                                                        <option value="{{ $i }}">{{ $i }}</option>
-                                                    @endfor
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                                            @foreach (unserialize($item->opciones) as $option)
+                                                <div class="form-group row mb-2">
+                                                    <label
+                                                        class="col-sm-3 col-form-label py-0">{{ $option['texto'] }}:</label>
+                                                    <div class="col-sm-9">
+                                                        <select data-value="{{ $option['texto'] }}"
+                                                            data-precio_extra_opcion="{{ isset($option['pextra']) ? $option['pextra'] : 0 }}"
+                                                            class="form-control"
+                                                            name="campo_adicional[{{ $item->id }}][{{ $option['texto'] }}]">
+                                                            @for ($i = 0; $i <= 10; $i++)
+                                                                <option value="{{ $i }}">
+                                                                    {{ $i }}</option>
+                                                            @endfor
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         @else
                                             <div class="form-group row">
                                                 <label
@@ -508,7 +530,8 @@
                                                     <div id="precio_total"
                                                         data-precio_multip="{{ isset($intervalo['tipopextra']) && $intervalo['tipopextra'] != 'fijo' ? $intervalo['pextra'] : '' }}"
                                                         data-precio_base={{ $pista->get_precio_total_given_timestamp(request()->timestamp) }}>
-                                                        <span></span> €</div>
+                                                        <span></span> €
+                                                    </div>
                                                 </div>
                                             </div>
                                         @endif
@@ -564,7 +587,7 @@
                     timestamp: $('#timestamp').val()
                 },
                 success: function(
-                result) { //success es una funcion que se utiliza si el servidor retorna informacion
+                    result) { //success es una funcion que se utiliza si el servidor retorna informacion
                     if (result) {
                         window.location.replace($('#url_redirect').val());
                     }

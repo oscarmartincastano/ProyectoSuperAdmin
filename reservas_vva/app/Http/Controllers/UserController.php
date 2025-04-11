@@ -142,6 +142,15 @@ class UserController extends Controller
         // Determinar si hay servicios no contratados
         $servicios_no_contratados = array_diff($servicios_disponibles, $servicios_contratados);
 
+        $servicios_generales = Servicio::whereNull('pista_id')->where('reservas', 'Si')->pluck('id')->toArray();
+
+        $servicios_generales_contratados = Servicio_Usuario::where('id_usuario', $user->id)
+            ->whereIn('id_servicio', $servicios_generales)
+            ->whereDate('fecha_expiracion', '>=', \Carbon\Carbon::now()->format('Y-m-d'))
+            ->where('activo', 'si')
+            ->pluck('id_servicio')
+            ->toArray();
+
         if (!$pista->check_reserva_valida($request->timestamp)) {
             return view('pista.reservanodisponible');
         }
@@ -153,13 +162,35 @@ class UserController extends Controller
             $user_no_valid = true;
             return view('pista.reservanodisponible', compact('user_no_valid'));
         }
-        $servicio = Servicio::where('pista_id', $request->id_pista)->first();
+        $servicio = Servicio::where('pista_id', $request->id_pista)->get();
+        $servicios_generales_no_contratados = array_diff($servicios_generales, $servicios_generales_contratados);
+        $servicios_especificos_no_contratados = array_diff($servicio->pluck('id')->toArray(), $servicios_contratados);
 
         if (count($servicios_disponibles) > 0 && ($request->slug_instalacion != 'santaella' || $request->slug_instalacion != 'la-guijarrosa')) {
-            if (count($servicios_no_contratados) > 0 && $servicio) {
-                return view('pista.reservaservicionodisponible');
+            if (count($servicios_no_contratados) >= 0) {
+                if ($servicio->isEmpty()) {
+                    // Si no hay servicios específicos asociados a la pista
+                    if (!empty($servicios_generales)) {
+                        // Comprobar si hay servicios generales contratados
+                        if (count($servicios_generales_no_contratados) == count($servicios_generales)) {
+                            // Si hay servicios generales pero no están contratados, mostrar error
+                            return view('pista.reservaservicionodisponible');
+                        }
+                    } else {
+                        // Si no hay servicios generales, mostrar error
+                        return view('pista.reservaservicionodisponible');
+                    }
+                } else {
+                    // Si hay servicios específicos asociados a la pista
+                    if (count($servicios_especificos_no_contratados) == count($servicio) && count($servicios_generales_no_contratados) == count($servicios_generales)) {
+                        // Si hay servicios específicos pero no están contratados, mostrar error
+                        return view('pista.reservaservicionodisponible');
+                    }
+                }
             }
         }
+
+        
 
         // dd($pista->horario_deserialized);
 
@@ -196,9 +227,9 @@ class UserController extends Controller
         }
         $intervalo = $pista->get_intervalo_given_timestamp($request->timestamp);
         if ($bono_usuario) {
-            return view('pista.reserva', compact('pista', 'fecha', 'secuencia', 'number', 'intervalo', 'instalacion', 'bono_usuario'));
+            return view('pista.reserva', compact('pista', 'fecha', 'secuencia', 'number', 'intervalo', 'instalacion', 'bono_usuario','servicios_contratados'));
         } else {
-            return view('pista.reserva', compact('pista', 'fecha', 'secuencia', 'number', 'intervalo', 'instalacion'));
+            return view('pista.reserva', compact('pista', 'fecha', 'secuencia', 'number', 'intervalo', 'instalacion','servicios_contratados'));
         }
     }
 
