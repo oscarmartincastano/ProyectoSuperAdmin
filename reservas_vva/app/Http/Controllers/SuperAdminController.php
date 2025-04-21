@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class SuperAdminController extends Controller
 {
@@ -629,7 +630,7 @@ public function deleteUser($id, $userId)
         ];
 
         foreach ($tablesWithIdParticipante as $table) {
-            if ($dinamicConnection->getSchemaBuilder()->hasTable($table)) {
+            if (Schema::connection('dynamic')->hasTable($table)) {
                 $dinamicConnection->table($table)->whereIn('id_participante', $idParticipantes)->delete();
             }
         }
@@ -645,7 +646,7 @@ public function deleteUser($id, $userId)
         ];
 
         foreach ($tablesWithIdUsuario as $table) {
-            if ($dinamicConnection->getSchemaBuilder()->hasTable($table)) {
+            if (Schema::connection('dynamic')->hasTable($table)) {
                 $dinamicConnection->table($table)->where('id_usuario', $userId)->delete();
             }
         }
