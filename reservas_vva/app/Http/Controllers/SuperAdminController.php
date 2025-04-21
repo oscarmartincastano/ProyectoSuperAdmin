@@ -14,12 +14,20 @@ use Illuminate\Support\Facades\Schema;
 
 class SuperAdminController extends Controller
 {
-    public function index()
-    {
-        $ayuntamientos = SuperAdmin::all();
-        // return $ayuntamientos;
-        return view('superadmin.index', compact('ayuntamientos'));
+    public function index(Request $request)
+{
+    $query = SuperAdmin::query();
+
+    if ($request->has('search') && !empty($request->search)) {
+        $search = $request->search;
+        $query->where('name', 'LIKE', "%$search%")
+              ->orWhere('id', $search);
     }
+
+    $ayuntamientos = $query->get();
+
+    return view('superadmin.index', compact('ayuntamientos'));
+}
 
     public function edit($id)
     {

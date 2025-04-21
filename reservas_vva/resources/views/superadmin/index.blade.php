@@ -9,6 +9,22 @@
 </script>
 @endif
     <a href="{{ route('superadmin.create') }}" class="btn btn-success mb-3">Nueva Instalación</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-slate-800 text-white">
+            <h5 class="mb-0"><i class="fas fa-search"></i> Buscar Instalaciones</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('superadmin.index') }}">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o ID"
+                        value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>
