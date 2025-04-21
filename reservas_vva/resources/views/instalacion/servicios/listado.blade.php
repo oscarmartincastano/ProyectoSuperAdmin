@@ -54,7 +54,7 @@
                                     </tr>
                                 @endforeach
                                 @else
-                                <tr><td colspan="4">No hay servicios activos</td></tr>
+                                <tr><td colspan="5">No hay servicios activos</td></tr>
                             @endif
                             </tbody>
                         </table>
