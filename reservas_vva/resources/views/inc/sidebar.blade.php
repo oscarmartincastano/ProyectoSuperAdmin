@@ -12,50 +12,6 @@
     <!-- START SIDEBAR MENU -->
     <div class="sidebar-menu">
         <!-- BEGIN SIDEBAR MENU ITEMS-->
-        @if(auth()->user()->rol == 'manager')
-        <ul class="menu-items">
-            <li class="m-t-10 {{ request()->is('/manager') ? 'active' : '' }}">
-                <a href="/manager">
-                    <span class="title">Inicio</span>
-                </a>
-                <span class="icon-thumbnail"><i data-feather="home"></i></span>
-            </li>
-            <li class="m-t-10 {{ request()->is('/manager/devoluciones') ? 'active' : '' }}">
-                <a href="/manager/devoluciones">
-                    <span class="title">Devoluciones</span>
-                </a>
-                <span class="icon-thumbnail"><i class="fa-solid fa-repeat"></i></span>
-            </li>
-            <li class="m-t-10 {{ request()->is('/manager/instalaciones') ? 'active' : '' }}">
-                <a href="/manager/instalaciones">
-                    <span class="title">Instalaciones</span>
-                </a>
-                <span class="icon-thumbnail"><i class="fa-regular fa-building"></i></span>
-            </li>
-            <li class="m-t-10 {{ request()->is('/manager/servicios') ? 'active' : '' }}">
-                <a href="/manager/servicios">
-                    <span class="title">Servicios</span>
-                </a>
-                <span class="icon-thumbnail"><i class="fa-solid fa-hand-holding"></i></span>
-            </li>
-
-            <li class="m-t-10 {{ request()->is('/manager/deportes') ? 'active' : '' }}">
-                <a href="/manager/deportes">
-                    <span class="title">Deportes</span>
-                </a>
-                <span class="icon-thumbnail"><i class="far fa-futbol"></i></span>
-            </li>
-            <li class="m-t-10">
-                <a href="{{ route('logout.manager') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <form id="logout-form" action="{{ route('logout.manager') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                    <span class="title">Cerrar sesión</span>
-                </a>
-                <span class="icon-thumbnail"><i data-feather="power"></i></span>
-            </li>
-        </ul>
-        @else
         <ul class="menu-items">
             <li class="m-t-10 {{ request()->is(request()->slug_instalacion . '/admin') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/">
@@ -64,6 +20,7 @@
                 <span class="icon-thumbnail"><i data-feather="home"></i></span>
             </li>
             @if (request()->slug_instalacion != "villafranca-navidad" && request()->slug_instalacion != "villafranca-actividades" or request()->slug_instalacion != "ciprea24" or request()->slug_instalacion == "eventos-bodega" or request()->slug_instalacion == "feria-jamon-villanuevadecordoba")
+            @if(auth()->user()->instalacion->permisos->ver_reservas == 1)
             <li class=" {{ request()->is(request()->slug_instalacion . '/admin/reservas*') ? 'open active' : '' }}">
                 <a href="javascript:;"><span class="title">Reservas</span>
                 <span class="arrow {{ request()->is(request()->slug_instalacion . '/admin/reservas*') ? 'open active' : '' }}"></span></a>
@@ -99,7 +56,7 @@
                     @endif
                 </ul>
             </li>
-
+            @endif
             @endif
             @if(auth()->user()->subrol != 'piscina')
             <li class=" {{ request()->is(request()->slug_instalacion . '/admin/orders*') ? 'open active' : '' }}">
@@ -108,10 +65,12 @@
                 <span class="icon-thumbnail"><i class="fa-solid fa-dollar-sign"></i></span>
                 <ul class="sub-menu" style=" {{ request()->is(request()->slug_instalacion . '/admin/orders*') ? 'display:block' : '' }}">
                     @if (request()->slug_instalacion != "villafranca-navidad" && request()->slug_instalacion != "villafranca-actividades" && request()->slug_instalacion != "ciprea24" or request()->slug_instalacion == "eventos-bodega" or request()->slug_instalacion == "feria-jamon-villanuevadecordoba")
+                    @if(auth()->user()->instalacion->permisos->ver_reservas == 1)
                     <li class="{{ request()->is(request()->slug_instalacion . '/admin/orders') ? 'active' : '' }}">
                         <a href="/{{ request()->slug_instalacion }}/admin/orders/reservas">Reservas</a>
                         <span class="icon-thumbnail">re</span>
                     </li>
+                    @endif
                 @endif
                   <li class="{{ request()->is(request()->slug_instalacion . '/admin/orders/tipos-clientes') ? 'active' : '' }}">
                       <a href="/{{ request()->slug_instalacion }}/admin/orders/eventos">Eventos</a>
@@ -126,6 +85,20 @@
                 </ul>
             </li>
             @endif
+            <li class="m-t-10 {{ request()->is('/admin/devoluciones') ? 'active' : '' }}">
+                <a href="/{{ request()->slug_instalacion }}/admin/devoluciones">
+                    <span class="title">Devoluciones</span>
+                </a>
+                <span class="icon-thumbnail"><i class="fa-solid fa-repeat"></i></span>
+            </li>
+            @if(auth()->user()->instalacion->permisos->ver_deportes == 1)
+            <li class="m-t-10 {{ request()->is('/admin/deportes') ? 'active' : '' }}">
+                <a href="/{{ request()->slug_instalacion }}/admin/deportes">
+                    <span class="title">Deportes</span>
+                </a>
+                <span class="icon-thumbnail"><i class="far fa-futbol"></i></span>
+            </li>
+            @endif
            {{--  @if(request()->slug_instalacion == 'vvadecordoba')
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/orders?tipo=Piscina') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/orders/Piscina">
@@ -134,19 +107,23 @@
                 <span class="icon-thumbnail"><i class="fa-solid fa-dollar-sign"></i></span>
             </li>@endif --}}
             @if (request()->slug_instalacion != "villafranca-navidad" && request()->slug_instalacion != "villafranca-actividades" && request()->slug_instalacion != "ciprea24" && request()->slug_instalacion != "eventos-bodega" && request()->slug_instalacion != "feria-jamon-villanuevadecordoba")
-
+            @if(auth()->user()->instalacion->permisos->ver_servicios == 1)
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/servicios/') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/servicios/">
                     <span class="title">Servicios</span>
                 </a>
                 <span class="icon-thumbnail"><i class="fa-solid fa-bullseye"></i></span>
             </li>
+            @endif
+            @if(auth()->user()->instalacion->permisos->ver_informes == 1)
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/orders/informes') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/orders/informes">
                     <span class="title">Informes</span>
                 </a>
                 <span class="icon-thumbnail"><i class="fa-solid fa-file-lines"></i></span>
             </li>
+            @endif
+            @if(auth()->user()->instalacion->permisos->ver_mensajes == 1)
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/mensajes*') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/mensajes" >
                     <span class="title">Mensajes informativos</span>
@@ -154,7 +131,8 @@
                 <span class="icon-thumbnail"><i data-feather="bell"></i></span>
             </li>
             @endif
-
+            @endif
+            @if(auth()->user()->instalacion->permisos->ver_eventos == 1)
             <li class=" {{ request()->is(request()->slug_instalacion . '/admin/eventos*') ? 'open active' : '' }}">
                 <a href="javascript:;"><span class="title">Eventos</span>
                 <span class="arrow {{ request()->is(request()->slug_instalacion . '/admin/eventos*') ? 'open active' : '' }}"></span></a>
@@ -185,6 +163,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
             {{-- <li class="{{ request()->is(request()->slug_instalacion . '/admin/eventos*') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/eventos" >
                     <span class="title">Evento</span>
@@ -195,13 +174,14 @@
             @if(auth()->user()->subrol == 'admin' and request()->slug_instalacion != "villafranca-navidad" and request()->slug_instalacion != "villafranca-actividades" and request()->slug_instalacion != "ciprea24" and request()->slug_instalacion != "eventos-bodega" and request()->slug_instalacion != "feria-jamon-villanuevadecordoba")
 
 
-
+            @if(auth()->user()->instalacion->permisos->ver_deportes == 1)
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/pistas*') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/pistas">
                     <span class="title">Espacios</span>
                 </a>
                 <span class="icon-thumbnail"><i class="material-icons sports_tennis">&#xea32;</i></span>
             </li>
+            @endif
             @endif
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/users*') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/users">
@@ -210,6 +190,7 @@
                 <span class="icon-thumbnail"><i data-feather="users"></i></span>
             </li>
             @if(request()->slug_instalacion == 'la-guijarrosa' || request()->slug_instalacion == 'santaella')
+            @if(auth()->user()->instalacion->permisos->ver_accesos == 1)
             <li class=" {{ request()->is(request()->slug_instalacion . '/admin/puertas*') ? 'open active' : '' }}">
                 <a href="javascript:;"><span class="title">Control de accesos</span>
                 <span class="arrow {{ request()->is(request()->slug_instalacion . '/admin/puertas*') ? 'open active' : '' }}"></span></a>
@@ -225,13 +206,16 @@
                     </li>
                 </ul>
               </li>
+              @endif
             @endif
-            {{-- <li class="{{ request()->is(request()->slug_instalacion . '/admin/cobro*') ? 'active' : '' }}">
+            @if(auth()->user()->instalacion->permisos->ver_cobros == 1)
+            <li class="{{ request()->is(request()->slug_instalacion . '/admin/cobro*') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/cobro">
                     <span class="title">Cobros</span>
                 </a>
                 <span class="icon-thumbnail"><i data-feather="credit-card"></i></span>
-            </li> --}}
+            </li>
+            @endif
             @if(auth()->user()->subrol == 'admin' or request()->slug_instalacion == "los-agujetas-de-villafranca")
             <li class=" {{ request()->is(request()->slug_instalacion . '/admin/configuracion*') ? 'open active' : '' }}">
               <a href="javascript:;"><span class="title">Configuracion</span>
@@ -264,11 +248,12 @@
                   </li>
               </ul>
             </li>
-
+            @if(auth()->user()->instalacion->permisos->ver_reservas == 1)
             <li class="{{ request()->is(request()->slug_instalacion . '/admin/campos-adicionales') ? 'active' : '' }}">
               <a href="/{{ request()->slug_instalacion }}/admin/campos-adicionales">Campos adicionales en reservas</a>
               <span class="icon-thumbnail"><i data-feather="plus-circle"></i></span>
             </li>
+            @endif
             @endif
             {{-- <li class="{{ request()->is(request()->slug_instalacion . '/admin/configuracion*') ? 'active' : '' }}">
                 <a href="/{{ request()->slug_instalacion }}/admin/configuracion">
@@ -286,7 +271,6 @@
                 <span class="icon-thumbnail"><i data-feather="power"></i></span>
             </li>
         </ul>
-        @endif
         <div class="clearfix"></div>
     </div>
     <!-- END SIDEBAR MENU -->

@@ -221,15 +221,6 @@
                                                     <label class="form-check-label" for="{{ $key }}_no">No</label>
                                                 </div>
                                             </div>
-                                        @else
-                                            <div class="mb-2">
-                                                <label class="form-label">
-                                                    {{ $key == 'ver_serviciosadicionales_admin' ? 'Servicios adicionales' : ucfirst(str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key))) }}
-                                                </label>
-                                                <p class="text-danger">
-                                                    La visualización de {{ str_replace('_', ' ', str_replace(['ver_', '_admin'], '', $key)) }} está desactivada. Pide al superadmin que lo active.
-                                                </p>
-                                            </div>
                                         @endif
                                     @endif
                                 @endforeach

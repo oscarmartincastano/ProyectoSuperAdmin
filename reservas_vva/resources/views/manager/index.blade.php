@@ -17,7 +17,7 @@
                         <div class="card-title">Instalaciones</div>
                     </div>
                     <div class="card-body">
-                        <a href="/manager/instalaciones/add" class="text-white btn btn-primary">Añadir nueva</a>
+                        <a href="/{{ request()->slug_instalacion }}/manager/instalaciones/add" class="text-white btn btn-primary">Añadir nueva</a>
                         <table class="table table-hover table-responsive">
                             <thead>
                                 <tr>
@@ -41,7 +41,7 @@
                                         <td><a href="http://gestioninstalacion.es/{{ $item->slug }}" target="_blank">http://gestioninstalacion.es/{{ $item->slug }}</a></td>
                                         <td>
                                             <div class="d-flex" style="gap: 5px">
-                                                <a href="/manager/instalaciones/{{ $item->id }}/edit" class="btn btn-primary"><i data-feather="edit"></i></a>
+                                                <a href="/{{ request()->slug_instalacion }}/manager/instalaciones/{{ $item->id }}/edit" class="btn btn-primary"><i data-feather="edit"></i></a>
                                             </div>
                                         </td>
                                     </tr>

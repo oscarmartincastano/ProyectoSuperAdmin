@@ -1775,8 +1775,12 @@ class InstalacionController extends Controller
             $img->orientate();
             $path = public_path() . '/img/eventos/'.$request->slug_instalacion;
 
-            $name = $evento->id . '.jpg';
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true); // Crear el directorio con permisos adecuados
+            }
 
+            $name = $evento->id . '.jpg';
+            
             if (getimagesize($image)[0] > 1000) {
                 $img->resize(900, 900, function ($constraint) {
                     $constraint->aspectRatio();
@@ -3019,6 +3023,43 @@ class InstalacionController extends Controller
 
     }
 
+    public function list_deportes(Request $request)
+    {
+        $deportes = Deporte::all();
+        return view('instalacion.configuraciones.deportes.list', compact('deportes'));
+    }
+
+    public function add_deporte_view(Request $request)
+    {
+        return view('instalacion.configuraciones.deportes.add');
+    }
+
+    public function add_deporte(Request $request)
+    {
+        Deporte::create(['nombre' => $request->nombre]);
+
+        return redirect('/'.$request->slug_instalacion.'/admin/deportes');
+    }
+
+    public function edit_deporte_view(Request $request)
+    {
+        $deporte = Deporte::find($request->id);
+        return view('instalacion.configuraciones.deportes.add', compact('deporte'));
+    }
+
+    public function edit_deporte(Request $request)
+    {
+        $deporte = Deporte::find($request->id);
+        $deporte->update(['nombre' => $request->nombre]);
+
+        return redirect('/'.$request->slug_instalacion.'/admin/deportes');
+    }
+
+    public function devoluciones(Request $request)
+    {
+        $pedidos = Pedido::where('estado', 'Devolucion pendiente')->orWhere('estado', 'Devuelto')->get();
+        return view('instalacion.configuraciones.devoluciones.list', compact('pedidos'));
+    }
 
 }
 

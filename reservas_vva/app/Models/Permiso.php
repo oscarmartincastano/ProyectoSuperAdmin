@@ -20,6 +20,11 @@ class Permiso extends Model
         'ver_condiciones',
         'ver_mapa',
         'ver_deportes',
+        'ver_eventos',
+        'ver_cobros',
+        'ver_informes',
+        'ver_mensajes',
+        'ver_reservas',
         'ver_normas_admin',
         'ver_servicios_admin',
         'ver_horario_admin',
@@ -27,6 +32,7 @@ class Permiso extends Model
         'ver_condiciones_admin',
         'ver_mapa_admin',
         'ver_deportes_admin',
+        'ver_eventos_admin',
     ];
 
     public function instalacion()

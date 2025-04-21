@@ -17,11 +17,10 @@
                         <div class="card-title">Deportes</div>
                     </div>
                     <div class="card-body">
-                        <a href="/{{ request()->slug_instalacion }}/manager/deportes/add" class="text-white btn btn-primary">Añadir nueva</a>
+                        <a href="/{{ request()->slug_instalacion }}/admin/deportes/add" class="text-white btn btn-primary">Añadir nueva</a>
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Icono</th>
                                     <th>Nombre</th>
                                     <th>#</th>
                                 </tr>
@@ -29,10 +28,9 @@
                             <tbody>
                                 @foreach ($deportes as $item)
                                     <tr>
-                                        <td><img src="/img/deportes/icons/{{ $item->id }}.png" height="50"></td>
                                         <td>{{ $item->nombre }}</td>
                                         <td>
-                                            <a href="/{{ request()->slug_instalacion }}/manager/deportes/{{ $item->id }}" class="btn btn-primary"><i class="far fa-edit"></i></a>
+                                            <a href="/{{ request()->slug_instalacion }}/admin/deportes/{{ $item->id }}" class="btn btn-primary"><i class="far fa-edit"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

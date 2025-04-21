@@ -145,7 +145,6 @@
 @section('content')
     @if (request()->slug_instalacion == 'la-guijarrosa')
         @php
-        dd($instalacion);
             $servicio_usuario = [];
             if (auth()->user()) {
                 $servicio_usuario = $servicios_contratados = \App\Models\Servicio_Usuario::where(
@@ -1077,7 +1076,7 @@
 
                 <div  id="boton-piscina" ><a href="/vvadecordoba/piscina"><h3>Reservar entradas de piscina</h3></a> </div>
                 @endif --}}
-            @if ($eventos->count())
+            @if ($eventos->count() and $instalacion->permisos->ver_eventos == 1 and $instalacion->permisos->ver_eventos_admin == 1)
                 <div class="card shadow-box mb-4">
                     <div class="card-header bg-white font-bold" style="font-weight: bold;padding: 12px;font-size: 18px;">
                         @if (

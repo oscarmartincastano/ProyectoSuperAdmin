@@ -555,13 +555,20 @@ CREATE TABLE `permisos` (
   `ver_condiciones` tinyint(1) NOT NULL DEFAULT 1,
   `ver_mapa` tinyint(1) NOT NULL DEFAULT 1,
   `ver_deportes` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_eventos` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_cobros` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_informes` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_mensajes` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_reservas` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_accesos` tinyint(1) NOT NULL DEFAULT 1,
   `ver_normas_admin` tinyint(1) NOT NULL DEFAULT 1,
   `ver_servicios_admin` tinyint(1) NOT NULL DEFAULT 1,
   `ver_horario_admin` tinyint(1) NOT NULL DEFAULT 1,
   `ver_politica_admin` tinyint(1) NOT NULL DEFAULT 1,
   `ver_condiciones_admin` tinyint(1) NOT NULL DEFAULT 1,
   `ver_mapa_admin` tinyint(1) NOT NULL DEFAULT 1,
-  `ver_deportes_admin` tinyint(1) NOT NULL DEFAULT 1
+  `ver_deportes_admin` tinyint(1) NOT NULL DEFAULT 1,
+  `ver_eventos_admin` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- --------------------------------------------------------
 

@@ -10,6 +10,7 @@ use App\Mail\ReservaAdmin;
 use App\Models\Pista;
 use App\Models\Instalacion;
 use App\Models\User;
+use App\Models\Permiso;
 use App\Models\Cobro;
 use App\Models\Configuracion;
 use App\Models\Reserva;
@@ -43,7 +44,11 @@ class ManagerController extends Controller
 
     public function add_instalacion(Request $request)
     {
-        $instalacion = Instalacion::create($request->except('email', 'password', 'logo'));
+        $data = $request->except('email', 'password', 'logo');
+    $data['tipo_reservas_id'] = 1;
+
+    // Crear la instalación
+    $instalacion = Instalacion::create($data);
         User::create([
             'id_instalacion' => $instalacion->id,
             'name' => $instalacion->nombre,
@@ -53,7 +58,7 @@ class ManagerController extends Controller
             'subrol' => 'admin',
             'aprobado' => date('Y-m-d H:i:s')
         ]);
-        Configuracion::create([
+        Permiso::create([
             'id_instalacion' => $instalacion->id
         ]);
 
@@ -75,7 +80,7 @@ class ManagerController extends Controller
 
         }
 
-        return redirect('/manager');
+        return redirect('/{{ request()->slug_instalacion }}/manager');
     }
 
     public function edit_instalacion_view(Request $request)

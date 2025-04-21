@@ -362,7 +362,7 @@ class SuperAdminController extends Controller
 
         $this->executeSqlFile($dynamicConnection, base_path('plantilla.sql'));
 
-        $dynamicConnection->table('instalaciones')->insert([
+        $idInstalacion = $dynamicConnection->table('instalaciones')->insertGetId([
             'nombre' => $request->input('name'),
             'direccion' => $request->input('direccion'),
             'tlfno' => $request->input('tlfno'),
@@ -371,6 +371,12 @@ class SuperAdminController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $dynamicConnection->table('permisos')->insert([
+            'id_instalacion' => $idInstalacion,
+        ]);
+
+        
     }
 
     private function updateDatabase($bdNombre, Request $request)
@@ -522,6 +528,7 @@ class SuperAdminController extends Controller
                     'password' => Hash::make($request->input('password')),
                     'rol' => $request->input('rol'), // Rol predeterminado
                     'subrol' => $request->input('subrol'), // Subrol desde el formulario
+                    'aprobado' => now(), // Aprobado por defecto
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

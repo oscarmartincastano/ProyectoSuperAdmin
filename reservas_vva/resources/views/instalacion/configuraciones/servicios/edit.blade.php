@@ -25,7 +25,7 @@
                                 <input  value="{{$servicio->nombre}}" name="nombre" type="text" placeholder="Nombre..." class="form-control" required>
                             </div>
                             <div class="form-group row">
-                                <label>Espacio</label>
+                                <label>Deporte</label>
                                 <select name="espacio" id="espacio" class="form-control">
                                     @foreach (auth()->user()->instalacion->deportes_clases as $item)
                                         <option value="{{ $item->id }}" @if($servicio->tipo_espacio == $item->id) selected  @endif>{{ $item->nombre }}</option>
@@ -34,7 +34,7 @@
                             </div>
                             <div class="row" id="div_promo" style="display: none;">
                                 <div class="col-sm">
-                                    <label>Deporte</label>
+                                    <label>Pista</label>
                                     <div class="input-group mb-3">
                                         <select id="promocion"  name="deporte" class="form-control select3 select-promo">
 

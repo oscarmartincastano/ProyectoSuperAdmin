@@ -127,53 +127,6 @@ Route::get('import', function () {
     return view('mant');
 }); */
 
-Route::group(['prefix' => 'manager'], function () {
-    Route::group(['prefix' => '/', 'middleware' => 'auth_manager'], function () {
-        Route::get('/', 'ManagerController@index');
-
-        Route::group(['prefix' => 'instalaciones'], function () {
-            Route::get('/', 'ManagerController@index');
-            Route::get('/add', 'ManagerController@add_instalacion_view');
-            Route::post('/add', 'ManagerController@add_instalacion');
-
-            Route::group(['prefix' => '{id}'], function () {
-                Route::get('/', 'ManagerController@ver_instalacion');
-                Route::get('/edit', 'ManagerController@edit_instalacion_view');
-                Route::post('/edit', 'ManagerController@edit_instalacion');
-            });
-        });
-
-        Route::group(['prefix' => 'servicios'], function () {
-            Route::get('/', 'ManagerController@list_servicios');
-
-            Route::get('/add', 'ManagerController@add_servicio_view');
-            Route::post('/add', 'ManagerController@add_servicio');
-
-            Route::group(['prefix' => '{id}'], function () {
-                Route::get('/', 'ManagerController@edit_servicio_view');
-                Route::post('/', 'ManagerController@edit_servicio');
-            });
-        });
-
-        Route::group(['prefix' => 'deportes'], function () {
-            Route::get('/', 'ManagerController@list_deportes');
-
-            Route::get('/add', 'ManagerController@add_deporte_view');
-            Route::post('/add', 'ManagerController@add_deporte');
-
-            Route::group(['prefix' => '{id}'], function () {
-                Route::get('/', 'ManagerController@edit_deporte_view');
-                Route::post('/', 'ManagerController@');
-            });
-        });
-
-        Route::group(['prefix' => 'devoluciones'], function () {
-            Route::get('/', 'ManagerController@devoluciones');
-            Route::post('{id}/devolver', 'ManagerController@devolver_pedido');
-        });
-    });
-});
-
 Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalacion'], function () {
     Route::get('/pistas-por-deporte/{deporte}/{fecha}', 'UserController@pistas_por_deportes_fecha');
     Route::get('/pistas-por-deporte-mes/{deporte}/{mes}/{year}', 'UserController@pistas_por_deportes_mes');
@@ -345,6 +298,7 @@ Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalaci
     Route::get('/prueba5', function () {
         check_cookie();
     });
+
 
     Route::get('redsys', ['as' => 'redsys', 'uses' => 'RedsysController@index']);
     Route::get('/ko', 'RedsysController@ko');
@@ -611,6 +565,23 @@ Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalaci
             Route::post('/campos-personalizados/{id}', 'InstalacionController@edit_campos_personalizados');
             Route::get('/campos-personalizados/{id}/delete', 'InstalacionController@delete_campos_personalizados');
         });
+
+        Route::group(['prefix' => 'deportes'], function () {
+            Route::get('/', 'InstalacionController@list_deportes');
+
+            Route::get('/add', 'InstalacionController@add_deporte_view');
+            Route::post('/add', 'InstalacionController@add_deporte');
+
+            Route::group(['prefix' => '{id}'], function () {
+                Route::get('/', 'InstalacionController@edit_deporte_view');
+                Route::post('/', 'InstalacionController@editar_deporte');
+            });
+        });
+
+        Route::group(['prefix' => 'devoluciones'], function () {
+            Route::get('/', 'InstalacionController@devoluciones');
+            Route::post('{id}/devolver', 'InstalacionController@devolver_pedido');
+        });
     });
     Route::group(['prefix' => '{deporte}'], function () {
         Route::get('/', 'UserController@pistas');
@@ -625,7 +596,7 @@ Route::group(['prefix' => '{slug_instalacion}', 'middleware' => 'check_instalaci
     });
 
     // Ruta para el calendario tipo 2
-    Route::group(['prefix'=>'{nombre}/{tipo}/{id}/{id_instalacion}'], function () {
+    Route::group(['prefix' => '{nombre}/{tipo}/{id}/{id_instalacion}'], function () {
         Route::get('/', 'UserController@index_nuevo');
         Route::get('/horarios', 'UserController@obtenerHorarios');
     });

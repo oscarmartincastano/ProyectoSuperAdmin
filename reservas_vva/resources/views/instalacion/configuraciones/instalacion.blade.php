@@ -34,8 +34,10 @@
                                 <tr>
                                     <th>Tipo de calendario</th>
                                     @if($tipoCalendario == 0)
-                                    <td>Calendario 1</td>
+                                    <td>Sin Calendario</td>
                                     @elseif($tipoCalendario == 1)
+                                    <td>Calendario 1</td>
+                                    @elseif($tipoCalendario == 2)
                                     <td>Calendario 2</td>
                                     @endif
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/tipo_calendario" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
@@ -55,7 +57,7 @@
                                     <td><img src="/img/portadas-inst/{{ $instalacion->slug }}.jpg" style="max-width: 200px"></td>
                                     <td><a href="/{{ request()->slug_instalacion }}/admin/configuracion/instalacion/edit/cover" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
                                 </tr>
-                                @if($instalacion->ver_horario==true)
+                                @if($instalacion->permisos->ver_horario==1)
                                 <tr>
                                     <th>Horario instalación</th>
                                     <td>
