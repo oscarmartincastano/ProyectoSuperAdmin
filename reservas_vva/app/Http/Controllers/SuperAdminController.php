@@ -291,24 +291,33 @@ class SuperAdminController extends Controller
     }
 
     public function store(Request $request)
-    {
-        set_time_limit(300); // Aumenta el límite a 300 segundos
+{
+    set_time_limit(300); // Aumenta el límite a 300 segundos
 
-        $this->validateRequest($request);
+    $this->validateRequest($request);
 
-        $url = $this->processUrl($request->input('url'));
-        $bdNombre = $request->input('bd_nombre');
+    $url = $this->processUrl($request->input('url'));
+    $bdNombre = $request->input('bd_nombre');
 
-        try {
-            $this->createOrUpdateDatabase($bdNombre, $request);
-        } catch (\Exception $e) {
-            $this->handleDatabaseError($bdNombre, $e);
-        }
-
-        $this->createSuperAdminRecord($request, $url, $bdNombre);
-
-        return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento creado con éxito.');
+    // Verificar si ya existe un registro con el mismo nombre de base de datos
+    $existingDatabase = SuperAdmin::where('bd_nombre', $bdNombre)->first();
+    if ($existingDatabase) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->withErrors(['bd_nombre' => 'El nombre de la base de datos ya está en uso.']);
     }
+
+    try {
+        $this->createOrUpdateDatabase($bdNombre, $request);
+    } catch (\Exception $e) {
+        $this->handleDatabaseError($bdNombre, $e);
+    }
+
+    $this->createSuperAdminRecord($request, $url, $bdNombre);
+
+    return redirect()->route('superadmin.index')->with('success', 'Ayuntamiento creado con éxito.');
+}
 
     private function validateRequest(Request $request)
     {
