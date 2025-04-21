@@ -54,4 +54,13 @@
             @endforeach
         </tbody>
     </table>
+
+<!-- Paginación -->
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination pagination-lg">
+            {{ $ayuntamientos->links('pagination::bootstrap-4') }}
+        </ul>
+    </nav>
+</div>
 @endsection

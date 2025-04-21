@@ -24,7 +24,7 @@ class SuperAdminController extends Controller
               ->orWhere('id', $search);
     }
 
-    $ayuntamientos = $query->get();
+    $ayuntamientos = $query->paginate(10); // Mostrar 15 registros por página
 
     return view('superadmin.index', compact('ayuntamientos'));
 }
