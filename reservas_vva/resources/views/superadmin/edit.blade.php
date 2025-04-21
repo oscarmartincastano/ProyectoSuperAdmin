@@ -24,7 +24,7 @@
 
         <!-- Información del Ayuntamiento -->
         <div class="mb-4">
-            <h3 class="text-primary">Información del Ayuntamiento</h3>
+            <h3 class="text-primary">Información de la Instalación</h3>
             
             <div class="row">
                 <div class="col-md-6 mb-3">

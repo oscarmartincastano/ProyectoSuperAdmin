@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('header', 'Crear Nuevo Ayuntamiento')
+@section('header', 'Crear Nueva Instalación')
 
 @section('content')
 @if (!Auth::check())
@@ -9,11 +9,11 @@
 </script>
 @endif
 
-    {{-- Formulario para crear un nuevo ayuntamiento --}}
+    {{-- Formulario para crear una nueva instalación --}}
     <form action="{{ route('superadmin.store') }}" method="POST" class="bg-light p-4 rounded shadow-sm">
         @csrf
         <div class="mb-3">
-            <label for="name" class="form-label">Nombre del ayuntamiento</label>
+            <label for="name" class="form-label">Nombre de la instalación</label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
                 value="{{ old('name') }}" required>
             @error('name')

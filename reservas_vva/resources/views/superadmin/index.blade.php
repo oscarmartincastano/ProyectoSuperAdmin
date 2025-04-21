@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('header', 'Listado de Ayuntamientos')
+@section('header', 'Listado de Instalaciones')
 
 @section('content')
 @if (!Auth::check())
@@ -8,7 +8,7 @@
     window.location.href = "{{ route('superadmin.login') }}";
 </script>
 @endif
-    <a href="{{ route('superadmin.create') }}" class="btn btn-success mb-3">Nuevo Ayuntamiento</a>
+    <a href="{{ route('superadmin.create') }}" class="btn btn-success mb-3">Nueva Instalación</a>
     <table class="table table-striped">
         <thead>
             <tr>
