@@ -95,7 +95,6 @@
                 <option value="">Seleccione un subrol</option>
                 <option value="user" {{ old('subrol') == 'user' ? 'selected' : '' }}>User</option>
                 <option value="admin" {{ old('subrol') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="manager" {{ old('subrol') == 'manager' ? 'selected' : '' }}>Manager</option>
             </select>
             @error('subrol')
                 <div class="invalid-feedback">{{ $message }}</div>

@@ -54,14 +54,12 @@
                                     <select name="rol" class="form-select">
                                         <option value="user" {{ $usuario->rol == 'user' ? 'selected' : '' }}>User</option>
                                         <option value="admin" {{ $usuario->rol == 'admin' ? 'selected' : '' }}>Admin</option>
-                                        <option value="manager" {{ $usuario->rol == 'manager' ? 'selected' : '' }}>Manager</option>
                                     </select>
                             </td>
                             <td>
                                     <select name="subrol" class="form-select">
                                         <option value="user" {{ $usuario->subrol == 'user' ? 'selected' : '' }}>User</option>
                                         <option value="admin" {{ $usuario->subrol == 'admin' ? 'selected' : '' }}>Admin</option>
-                                        <option value="manager" {{ $usuario->subrol == 'manager' ? 'selected' : '' }}>Manager</option>
                                     </select>
                             </td>
                             <td>
